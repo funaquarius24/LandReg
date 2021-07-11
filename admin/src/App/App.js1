@@ -1,0 +1,69 @@
+import React, { useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import AddMember from "./pages/AddMember";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Organization from "./pages/Organization";
+import Register from "./pages/Register";
+import RO from "./pages/RO";
+import User from "./pages/User";
+
+
+
+export default function App() {
+  const myStorage = window.localStorage;
+  const [token, setToken] = useState();
+  console.log(token);
+  if(!token) {
+    return <Login setToken={setToken} />
+  }
+  
+  return (
+    <Router>
+      <div>
+       
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          
+         
+          <Route exact path="/" >
+            <Dashboard />
+          </Route>
+
+          <Route exact path="/login" >
+            <Login />
+          </Route>
+
+          <Route exact path="/register" >
+            <Register />
+          </Route>
+
+          <Route exact path="/organization" >
+            <Organization />
+          </Route>
+
+          <Route exact path="/add-member" >
+            <AddMember />
+          </Route>
+
+          <Route exact path="/user" >
+            <User />
+          </Route>
+
+
+          <Route exact path="/r-of-c" >
+            <RO />
+          </Route>
+          
+        </Switch>
+      </div>
+    </Router>
+  );
+}
