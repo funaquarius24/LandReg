@@ -8,7 +8,6 @@ contract LandReg{
         string district;
         string cadzone;
         uint256 plotNumber;
-        string region;
         uint256 plotSize;  // * 4 decimal places
         address payable currentOwner;
         uint marketValue;
@@ -22,8 +21,10 @@ contract LandReg{
         string gender;
         uint dob;
         string ownerAddress;
-        string phone;
+        string phone1;
+        string phone2;
         string NIN;
+        string email;
     }
 
     //request status
@@ -55,26 +56,29 @@ contract LandReg{
     }
     
     //adding region admins
-    function addAdmin( address admin, string memory region ) onlyOwner public {
-        admins[region] = admin;
+    function addAdmin( address admin, string memory state ) onlyOwner public {
+        admins[state] = admin;
     }
     //Registration of land details.
     function registerLand(
         string memory state,
         string memory district,
-        string memory region, 
         string memory cadzone,
+        uint32 plotSize,
+        string memory plotNumber,
         address payable ownerAddress,
-        uint marketValue,
         uint id
         ) public returns(bool) {
-        require(admins[region] == msg.sender || owner == msg.sender);
+        require(admins[state] == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
+        require(lands[id].plotSize == 0 && lands[id].state == "", "Land with this ID already exists.");
         lands[id].state = state;
         lands[id].district = district;
-        lands[id].region = region;
-        lands[id].currentOwner = ownerAddress;
-        lands[id].marketValue = marketValue;
         lands[id].cadzone = cadzone;
+        
+        lands[id].plotNumber = plotNumber;
+        lands[id].plotSize = plotSize;
+        lands[id].currentOwner = ownerAddress;
+
         profile[ownerAddress].assetList.push(id);
         return true;
     }
@@ -91,7 +95,18 @@ contract LandReg{
 
     //to view details of land for the owner
     function landInfoOwner(uint id) public view returns(string memory,string memory,string memory,bool,address,reqStatus){
-        return(lands[id].state,lands[id].district,lands[id].region,lands[id].isAvailable,lands[id].requester,lands[id].requestStatus);
+        return(
+            lands[id].state,
+            lands[id].district,
+            lands[id].cadzone,
+            lands[id].plotNumber,
+            lands[id].plotSize,
+            lands[id].currentOwner,
+            lands[id].marketValue,
+            lands[id].isAvailable;
+            lands[id].requester;
+            lands[id].requestStatus; 
+            );
     }
     
     //to view details of land for the buyer
