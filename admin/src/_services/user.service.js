@@ -1,6 +1,6 @@
 // import config from 'config';
 import { authHeader } from '../_helpers';
-const apiUrl = 'http://localhost:4000'
+const apiUrl = 'http://localhost:4200'
 
 export const userService = {
     login,

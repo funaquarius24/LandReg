@@ -7,17 +7,9 @@ exports.insert = (req, res) => {
     req.body.password = salt + "$" + hash;
     if(!req.body.permissionLevel)
        req.body.permissionLevel = 1;
-       UserModel.findByEmail(req.body.email)
-        .then((user)=>{
-            if(!user[0]){
-                UserModel.createUser(req.body)
-                .then((result) => {
-                    res.status(201).send({id: result._id});
-                });
-            }else{
-                const re = "Email: " + req.body.email + " is already existing. Insertion failed.";
-                res.status(400).send(re);
-            }
+    UserModel.createUser(req.body)
+        .then((result) => {
+            res.status(201).send({id: result._id});
         });
 };
 
