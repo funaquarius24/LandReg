@@ -23,10 +23,12 @@ exports.hasAuthValidFields = (req, res, next) => {
 };
 
 exports.isPasswordAndUserMatch = (req, res, next) => {
+    let errors = [];
     UserModel.findByEmail(req.body.email)
         .then((user)=>{
             if(!user[0]){
-                res.status(404).send({});
+                errors.push("User not in record!");
+                res.status(404).send({errors: errors.join(',')});
             }else{
                 let passwordFields = user[0].password.split('$');
                 let salt = passwordFields[0];
@@ -38,6 +40,7 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
                         permissionLevel: user[0].permissionLevel,
                         provider: 'email',
                         name: user[0].firstName + ' ' + user[0].lastName,
+                        wAddress: user[0].key
                     };
                     return next();
                 } else {

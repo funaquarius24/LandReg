@@ -15,8 +15,6 @@ var contractOptions = {from: web3.eth.accounts[0], gasPrise: '20000000000'};
 // var myContract = new web3.eth.Contract(LandReg.abi, config.contract_address, contractOptions);
 
 
-
-
 MyContract.setProvider(provider);
 
 var deployed;

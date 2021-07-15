@@ -1,4 +1,6 @@
-pragma solidity >=0.4.21 <0.7.4;
+// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.5.1 <= 0.8.6;
 
 contract LandReg{
     address superAdmin;
@@ -14,6 +16,7 @@ contract LandReg{
         bool isAvailable;
         address requester;
         reqStatus requestStatus; 
+        uint id;
     }
 
     struct ownerDetails {
@@ -25,27 +28,41 @@ contract LandReg{
         string phone2;
         string NIN;
         string email;
+        address payable wAddress;
+    }
+
+    struct adminDetails {
+        string name;
+        string state;
+        string district;
+    }
+    struct adminState {
+        address adminAddress;
     }
 
     //request status
-    enum reqStatus {Default,pending,reject,approved}
-
-    enum ownerType {organization, individual}
+    enum reqStatus { Default, pending, reject, approved }
 
     //profile of a client
     struct profiles{
         uint[] assetList;   
     }
 
-    mapping( uint => landDetails ) lands;
+    struct landState {
+        uint[] ids;
+    }
+
+    mapping(uint => landDetails) lands;
+    mapping(string => landState) landStates; // Push land ids inside their respestive states
     address owner;
-    mapping( string => address) admins;
+    mapping( address => adminDetails) admins;
+    mapping(string => adminState) adminStates;
     mapping( address => profiles) profile;
 
     mapping( address => ownerDetails ) owners;
     
     //contract owner
-    constructor() public {
+    constructor() {
         owner = msg.sender;
         superAdmin = owner;
     }
@@ -56,30 +73,37 @@ contract LandReg{
     }
     
     //adding region admins
-    function addAdmin( address admin, string memory state ) onlyOwner public {
-        admins[state] = admin;
+    function addAdmin( address admin, string memory name, string memory state, string memory district ) onlyOwner public {
+        admins[admin].name = name;
+        admins[admin].state = state;
+        admins[admin].district = district;
+
+        adminStates[state].adminAddress = admin;
     }
     //Registration of land details.
     function registerLand(
         string memory state,
         string memory district,
         string memory cadzone,
-        uint32 plotSize,
-        string memory plotNumber,
-        address payable ownerAddress,
-        uint id
+        uint plotNumber,
+        uint plotSize,
+        address payable wAddress
         ) public returns(bool) {
-        require(admins[state] == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
-        require(lands[id].plotSize == 0 && lands[id].state == "", "Land with this ID already exists.");
+        require(adminStates[state].adminAddress == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
+        uint id = computeId(state,district,cadzone,plotNumber);
+        require(lands[id].plotSize == 0 && lands[id].plotNumber == 0, "Land with this ID already exists.");
         lands[id].state = state;
         lands[id].district = district;
         lands[id].cadzone = cadzone;
         
         lands[id].plotNumber = plotNumber;
         lands[id].plotSize = plotSize;
-        lands[id].currentOwner = ownerAddress;
+        lands[id].currentOwner = wAddress;
 
-        profile[ownerAddress].assetList.push(id);
+        lands[id].id = id;
+        landStates[state].ids.push(id);
+
+        profile[wAddress].assetList.push(id);
         return true;
     }
 
@@ -88,42 +112,62 @@ contract LandReg{
         string memory gender,
         uint dob,
         string memory ownerAddress,
-        string memory phone
-    ) onlyOwner public view returns (bool){
-        
+        string memory phone1,
+        string memory phone2,
+        string memory NIN,
+        string memory email,
+        string memory stateOfAdmin,
+        address payable wAddress
+    ) onlyOwner public returns (bool){
+        require(adminStates[stateOfAdmin].adminAddress == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
+        bytes32 emptyHash = keccak256("");
+        require( keccak256(bytes(owners[wAddress].NIN)) == emptyHash || keccak256(bytes(owners[wAddress].email)) == emptyHash, "This account already exists.");
+
+        owners[wAddress].name = name;
+        owners[wAddress].gender = gender;
+        owners[wAddress].dob = dob;
+        owners[wAddress].ownerAddress = ownerAddress;
+        owners[wAddress].phone1 = phone1;
+        owners[wAddress].phone2 = phone2;
+        owners[wAddress].NIN = NIN;
+        owners[wAddress].email = email;
+        owners[wAddress].wAddress = wAddress;
+
+        return true;
     }
 
     //to view details of land for the owner
-    function landInfoOwner(uint id) public view returns(string memory,string memory,string memory,bool,address,reqStatus){
+    function landInfoOwner(uint id) public view returns(string memory,string memory,string memory,uint,uint,address,uint, bool,address,reqStatus){
+        landDetails memory lands_local = lands[id];
         return(
-            lands[id].state,
-            lands[id].district,
-            lands[id].cadzone,
-            lands[id].plotNumber,
-            lands[id].plotSize,
-            lands[id].currentOwner,
-            lands[id].marketValue,
-            lands[id].isAvailable;
-            lands[id].requester;
-            lands[id].requestStatus; 
+            lands_local.state,
+            lands_local.district,
+            lands_local.cadzone,
+            lands_local.plotNumber,
+            lands_local.plotSize,
+            lands_local.currentOwner,
+            lands_local.marketValue,
+            lands_local.isAvailable,
+            lands_local.requester,
+            lands_local.requestStatus
             );
     }
     
     //to view details of land for the buyer
-    function landInfoUser(uint id) public view returns(address,uint,bool,address,reqStatus){
-        return(lands[id].currentOwner,lands[id].marketValue,lands[id].isAvailable,lands[id].requester,lands[id].requestStatus);
+    function landInfoBuyer(uint id) public view returns(address,uint,bool,address,reqStatus){
+        return(lands[id].currentOwner, lands[id].marketValue, lands[id].isAvailable, lands[id].requester, lands[id].requestStatus);
     }
 
     // to compute id for a land.
-    function computeId(string memory state,string memory district,string memory region,uint surveyNumber) public pure returns(uint){
-        return uint(keccak256(abi.encodePacked(state,district,region,surveyNumber)))%10000000000000;
+    function computeId(string memory state, string memory district, string memory cadzone, uint plotNumber) public pure returns(uint){
+        return uint(keccak256(abi.encodePacked(state, district, cadzone, plotNumber)))%10000000000000;
     }
 
     //push a request to the land owner
     function requstToLandOwner(uint id) public {
         require(lands[id].isAvailable);
-        lands[id].requester=msg.sender;
-        lands[id].isAvailable=false;
+        lands[id].requester = msg.sender;
+        lands[id].isAvailable = false;
         lands[id].requestStatus = reqStatus.pending; //changes the status to pending.
     }
     //will show assets of the function caller 
@@ -135,9 +179,9 @@ contract LandReg{
         return(lands[property].requester);
     }
     //processing request for the land by accepting or rejecting
-    function processRequest(uint property,reqStatus status)public {
+    function processRequest(uint property,reqStatus status) public {
         require(lands[property].currentOwner == msg.sender);
-        lands[property].requestStatus=status;
+        lands[property].requestStatus = status;
         if(status == reqStatus.reject){
             lands[property].requester = address(0);
             lands[property].requestStatus = reqStatus.Default;
@@ -155,7 +199,7 @@ contract LandReg{
         require(msg.value >= (lands[property].marketValue+((lands[property].marketValue)/10)));
         lands[property].currentOwner.transfer(lands[property].marketValue);
         removeOwnership(lands[property].currentOwner,property);
-        lands[property].currentOwner=msg.sender;
+        lands[property].currentOwner=payable(msg.sender);
         lands[property].isAvailable=false;
         lands[property].requester = address(0);
         lands[property].requestStatus = reqStatus.Default;

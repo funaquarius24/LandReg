@@ -16,17 +16,17 @@ contract('LandReg', (accounts) => {
         });
         it('Should successfully register an owner', async () => {
             var res1 = 0;
-            res1 = await landRegInstance.registerOwner("Ismail", "Male", 1024, "abu zaria", "080178", "0801784", 1111, "a@b", "Lagos", newAccount);
+            res1 = await landRegInstance.registerOwner("Ismail", "Male", 1024, "abu zaria", "080178", "0801784", "1111", "a@b", "Lagos", newAccount);
             assert.notEqual(res1, 0, "Error occured when registering the owner.")
           });
         it('Should successfully register a land', async () => {
             var res1 = 0;
-            res1 = await landRegInstance.registerLand("a", "aa", "aaa", 2121, "ab", newAccount);
+            res1 = await landRegInstance.registerLand("a", "aa", "aaa", 2121, 1000, newAccount);
             assert.notEqual(res1, 0, "Error occured when registering the land.")
         });
         it('Should not successfully register a land', async () => {
             var res1 = 0;
-            res1 = await catchRevert( landRegInstance.registerLand("a", "aa", "aaa", 2121, "ab", newAccount));
+            res1 = await landRegInstance.registerOwner("Ismail", "Male", 1024, "abu zaria", "080178", "0801784", "1111", "a@b", "Lagos", newAccount);
             // assert.equal(res1, 0, "No error occured when registering the land.")
         });
     });
