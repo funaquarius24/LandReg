@@ -9,11 +9,11 @@ const LAND_OWNER = config.permissionLevels.LAND_OWNER;
 
 exports.routesConfig = function (app) {
     app.post('/users', [
-        ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        // ValidationMiddleware.validJWTNeeded,
+        // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.insert
     ]);
-    app.get('/users', [
+    app.get('/users/list', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.list

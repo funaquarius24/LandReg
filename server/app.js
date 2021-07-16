@@ -9,6 +9,7 @@ const config = require('./routes/common/config/env.config.js');
 
 const AuthorizationRouter = require('./routes/authorization/routes.config');
 const UsersRouter = require('./routes/users/routes.config');
+const BlockchainRouter = require('./routes/blockchain/routes.config')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -46,6 +47,7 @@ app.use('/', indexRouter);
 app.use(bodyParser.json());
 AuthorizationRouter.routesConfig(app);
 UsersRouter.routesConfig(app);
+BlockchainRouter.routesConfig(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

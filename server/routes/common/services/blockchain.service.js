@@ -8,10 +8,12 @@ const LandReg = require('../../../../build/contracts/LandReg.json');
 var provider = new Web3.providers.HttpProvider("http://localhost:8545");
 var web3 = new Web3(provider)
 
+
 var MyContract = contract(LandReg);
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
 var contractOptions = {from: web3.eth.accounts[0], gasPrise: '20000000000'};
+console.log("defaultAccount: ", web3.eth.defaultAccount)
 // var myContract = new web3.eth.Contract(LandReg.abi, config.contract_address, contractOptions);
 
 
@@ -22,9 +24,19 @@ var deployed;
 const connectWithRetry = async () => {
     try{
         var err;
-        var instance = await MyContract.deployed();
-        deployed = instance;
+        var instance = await MyContract.deployed()
+        .then((instance) => {
+            results.instance = instance;
+            accounts =  web3.eth.getAccounts();
+            return accounts;
+        })
+        .then((accounts) => {
+            // console.log("suAddress: ", accounts)
+            results['suAddress'] = accounts[0];
+        });
         // console.log(instance);
+
+        
 
         // var res = await instance.viewAssets();
         console.log("connected to blockchain node");
@@ -43,7 +55,7 @@ connectWithRetry();
 var results = {};
 results.web3 = web3;
 results.myContract = MyContract;
-results.deployed = deployed;
-
+results.instance = deployed;
+results.contractOptions = contractOptions;
 
 exports.blockchainObj = results

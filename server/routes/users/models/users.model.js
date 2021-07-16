@@ -20,11 +20,11 @@ const userSchema = new Schema({
             dropDups: true
         }
     },
+    password: String,
     key: {
         type: String,
         
     },
-    password: String,
     permissionLevel: {
         type: Number,
         max: 4096
@@ -51,8 +51,6 @@ const User = mongoose.model('Users', userSchema);
 exports.findByEmail = (email) => {
     return User.find({email: email})
         .then((result) => {
-            // result = result.toJSON();
-            console.log(result);
             return result;
         });
 };
