@@ -3,6 +3,7 @@ const crypto = require('crypto');
 
 exports.hasAuthValidFields = (req, res, next) => {
     let errors = [];
+    // console.log(req.body)
 
     if (req.body) {
         if (!req.body.email) {

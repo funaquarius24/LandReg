@@ -1,9 +1,7 @@
 const request = require('supertest')
-const app = require('../app')
+// const app = require('../app')
+const app =  'http://localhost:4200'
 var token = ''
-describe('Post users Endpoint', () => {
-  
-})
 
 describe('Users function endpoint', () => {
     it('should login with superAdmin', async () => {
@@ -22,7 +20,7 @@ describe('Users function endpoint', () => {
         .get('/users')
         .set('Authorization', 'Bearer ' + token)
 
-        console.log(res.body);
+        // console.log(res.body);
 
         expect(res.statusCode).toEqual(200)
     } )
@@ -33,7 +31,7 @@ describe('Users function endpoint', () => {
           .set('Authorization', 'Bearer ' + token)
           .send({
             userId: 1,
-            email: 'test is cool',
+            email: 'test is cooleer',
             password: 'ssjrjjt'
           }).then()
         expect(res.statusCode).toEqual(201)

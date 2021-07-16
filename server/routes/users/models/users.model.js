@@ -49,7 +49,12 @@ const User = mongoose.model('Users', userSchema);
 
 
 exports.findByEmail = (email) => {
-    return User.find({email: email});
+    return User.find({email: email})
+        .then((result) => {
+            // result = result.toJSON();
+            console.log(result);
+            return result;
+        });
 };
 
 exports.findById = (id) => {

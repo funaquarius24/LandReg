@@ -7,10 +7,22 @@ exports.insert = (req, res) => {
     req.body.password = salt + "$" + hash;
     if(!req.body.permissionLevel)
        req.body.permissionLevel = 1;
-    UserModel.createUser(req.body)
+    UserModel.findByEmail(req.body.email)
         .then((result) => {
-            res.status(201).send({id: result._id});
-        });
+            if(result.length == 0){
+                UserModel.createUser(req.body)
+                    .then((result) => {
+                        res.status(201).send({id: result._id});
+                    });
+            }
+            else{
+                res.status(409).send("User already exists.");
+            }
+        })
+    // if (tmpResult){
+    //     res.status(409).send(tmpResult, " Email already exists.");
+    // }
+    
 };
 
 exports.list = (req, res) => {
