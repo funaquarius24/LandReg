@@ -6,6 +6,7 @@ async function tryCatch(promise, message) {
         throw null;
     }
     catch (error) {
+        // console.log(error);
         assert(error, "Expected an error but did not get one");
         assert(error.message.includes(PREFIX + message), "Expected an error starting with '" + PREFIX + message + "' but got '" + error.message + "' instead");
     }

@@ -15,21 +15,6 @@ describe('Users function endpoint', () => {
         token = res.body['accessToken'];
     } )
 
-    it('should successfully create a new admin', async () => {
-        const res = await request(app)
-        .post('/users/addAdmin')
-        .set('Authorization', 'Bearer ' + token)
-        .send({
-          name: "Admin1",
-          email: "admin1@admin2",
-          password: "admin1Password",
-          state: "lagos",
-          district: "ikeja"
-        })
-
-        expect(res.statusCode).toEqual(201)
-    } )
-
     it('should successfully register a new owner', async () => {
         const res = await request(app)
         .post('/users/addOwner')
@@ -50,27 +35,42 @@ describe('Users function endpoint', () => {
       expect(res.statusCode).toEqual(201)
     } )
 
-    it('should get list of users', async () => {
+
+    it('should successfully register a new land', async () => {
         const res = await request(app)
-        .get('/users/list')
+        .post('/blockchain/addLand')
         .set('Authorization', 'Bearer ' + token)
+        .send({
+            state: "Lagos",
+            district: "Ikeja",
+            cadzone: "A88923",
+            plotNumber: parseInt(245534),
+            plotSize: parseInt(33285),
+            email: "owner1@owner1"
+        })
 
-        console.log(res.body);
-
-        expect(res.statusCode).toEqual(200)
+        expect(res.statusCode).toEqual(201)
     } )
 
-    it('should fail to create a new user', async () => {
+    it('should successfully edit a land\'s documents', async () => {
         const res = await request(app)
-          .post('/users')
-          .set('Authorization', 'Bearer ' + token)
-          .send({
-            userId: 1,
-            email: 'test is cooleer',
-            password: 'ssjrjjt'
-          }).then()
-        expect(res.statusCode).toEqual(409)
-      })
+        .post('/blockchain/editLandDocuments')
+        .set('Authorization', 'Bearer ' + token)
+        .send({
+            land_id: "",
+            state: "Lagos",
+            district: "Ikeja",
+            cadzone: "A88923",
+            plotNumber: parseInt('0245534'),
+            cofo: "ddiuf833hd-dsd",
+            cofoDate: parseInt(88923),
+            rofoHash: "0903245534",
+            rofoDate: parseInt(33285),
+            stateOfAdmin: "Lagos"
+        })
+
+
+        expect(res.statusCode).toEqual(201)
+    } )
 
 })
-// process.kill(process.pid, 'SIGTERM')

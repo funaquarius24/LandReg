@@ -1,61 +1,53 @@
 const Web3 = require('web3')
-var contract = require("@truffle/contract");
 const LandReg = require('../../../../build/contracts/LandReg.json');
+// import config from './config/config.json';
 
-// const  = require('../../build/contracts/LandReg.json');
-// const config = require('./config/config.json');
-
-var provider = new Web3.providers.HttpProvider("http://localhost:8545");
-var web3 = new Web3(provider)
-
-
-var MyContract = contract(LandReg);
-
+var web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 web3.eth.defaultAccount = web3.eth.accounts[0];
 var contractOptions = {from: web3.eth.accounts[0], gasPrise: '20000000000'};
-console.log("defaultAccount: ", web3.eth.defaultAccount)
-// var myContract = new web3.eth.Contract(LandReg.abi, config.contract_address, contractOptions);
 
 
-MyContract.setProvider(provider);
+var te = LandReg.networks;
+const keys = Object.keys(te);
 
-var deployed;
-
-const connectWithRetry = async () => {
-    try{
-        var err;
-        var instance = await MyContract.deployed()
-        .then((instance) => {
-            results.instance = instance;
-            accounts =  web3.eth.getAccounts();
-            return accounts;
-        })
-        .then((accounts) => {
-            // console.log("suAddress: ", accounts)
-            results['suAddress'] = accounts[0];
-        });
-        // console.log(instance);
-
-        
-
-        // var res = await instance.viewAssets();
-        console.log("connected to blockchain node");
-    }
-    catch(error){
-        console.error("unable to connect to blockchain");
-        console.log(error)
-    }
-    finally{
-        setTimeout(connectWithRetry, 10000);
-    }
-};
-
-connectWithRetry();
-
+var contract_address = te[keys[0]].address;
+var myContract = new web3.eth.Contract(LandReg.abi, contract_address, contractOptions);
+// MyContract.setProvider(provider);
 var results = {};
+
+err = null;
+(async () => {
+    console.log("start waiting");
+    var accounts = await web3.eth.getAccounts()
+    .then((accounts) => {
+        console.log("Connected!");
+    })
+    .catch(function failureCallback(error) {
+        err = "" + error;
+        if(err.indexOf("on send()") !== -1){
+            console.log("cannot open blockchain node");
+            console.log(err)
+        }
+        else {
+            console.log("Unknown error on blockchain node");
+        }
+      } );
+
+    if(err == null){
+        // app.locals.contractAccount = accounts[0];
+        console.log(web3.eth.accounts[0]);
+    }
+
+})();
+
+
+
+// connectWithRetry();
+
+
 results.web3 = web3;
-results.myContract = MyContract;
-results.instance = deployed;
+results.myContract = myContract;
+// results.instance = deployed;
 results.contractOptions = contractOptions;
 
 exports.blockchainObj = results

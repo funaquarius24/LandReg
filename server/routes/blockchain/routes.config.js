@@ -1,4 +1,5 @@
-const UsersController = require('./controllers/blockchain.controller');
+const BlockchainController = require('./controllers/blockchain.controller');
+// const UsersController = require('./controllers/users.controller');
 const PermissionMiddleware = require('../common/middlewares/auth.permission.middleware');
 const ValidationMiddleware = require('../common/middlewares/auth.validation.middleware');
 
@@ -9,9 +10,24 @@ const ADMIN = config.permissionLevels.ADMIN;
 const LAND_OWNER = config.permissionLevels.LAND_OWNER;
 
 exports.routesConfig = function (app) {
-    app.post('/blockchain', [
+    app.post('/blockchain/addAdmin', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
-        UsersController.insert
+        BlockchainController.insertAdmin
+    ]);
+    app.post('/blockchain/addOwner', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        BlockchainController.insertOwner
+    ]);
+    app.post('/blockchain/addLand', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        BlockchainController.insertLand
+    ]);
+    app.post('/blockchain/editLandDocuments', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        BlockchainController.editLandDocuments
     ]);
 };

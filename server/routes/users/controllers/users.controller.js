@@ -1,5 +1,11 @@
 const UserModel = require('../models/users.model');
 const crypto = require('crypto');
+const config = require('../../common/config/env.config');
+const BlockchainController = require('../../blockchain/controllers/blockchain.controller');
+
+const SU_ADMIN = config.permissionLevels.SU_ADMIN;
+const ADMIN = config.permissionLevels.ADMIN;
+const LAND_OWNER = config.permissionLevels.LAND_OWNER;
 
 exports.insert = (req, res) => {
     let salt = crypto.randomBytes(16).toString('base64');
@@ -22,6 +28,95 @@ exports.insert = (req, res) => {
     // if (tmpResult){
     //     res.status(409).send(tmpResult, " Email already exists.");
     // }
+    
+};
+
+exports.insertAdmin = (req, res, next) => {
+    let salt = crypto.randomBytes(16).toString('base64');
+    let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
+    req.body.password = salt + "$" + hash;
+    if(!req.body.permissionLevel)
+       req.body.permissionLevel = 4;
+    UserModel.findByEmail(req.body.email)
+        .then((result) => {
+            if(result.length == 0)
+                return result;
+            else{
+                res.error = "User already exists.";
+                res.status(409).send("User already exists.");
+                throw new Error(res.error);
+            }
+        })
+        .then((result) => {
+            req.isNext = true;
+            var result = BlockchainController.insertAdmin(req, res, next);
+            return result;
+        })
+        .then((blockchainResult) => {
+            
+            // console.log("result users:  ", blockchainResult);
+            if (blockchainResult === undefined | blockchainResult.transactionHash === undefined){
+                res.status(403).send("Failed to add to blockchain");
+                throw new Error("Failed to add to blockchain.");
+            }
+            // console.log("req.body: ", req.body);
+            req.body.key = req.body.newAddress;
+            UserModel.createUser(req.body)
+                .then((dbResult) => {
+                    // console.log("dbResult: ", dbResult);
+                    // console.log("newAddress: ", res.newAddress);
+                    res.status(201).send({id: dbResult._id, newAddress: res.newAddress});
+                });
+
+        })
+        .catch((error) => {
+            console.log("Error: User already exists.", error)
+        })
+    
+};
+
+exports.insertOwner = (req, res, next) => {
+    let salt = crypto.randomBytes(16).toString('base64');
+    let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
+    req.body.password = salt + "$" + hash;
+    if(!req.body.permissionLevel)
+       req.body.permissionLevel = 1;
+    UserModel.findByEmail(req.body.email)
+        .then((result) => {
+            if(result.length == 0)
+                return result;
+            else{
+                res.error = "User already exists.";
+                res.status(409).send("User already exists.");
+                throw new Error(res.error);
+            }
+        })
+        .then((result) => {
+            req.isNext = true;
+            // console.log("req.body: ", req.body);
+            var result = BlockchainController.insertOwner(req, res, next);
+            return result;
+        })
+        .then((blockchainResult) => {
+            
+            // console.log("result users:  ", blockchainResult);
+            if (blockchainResult === undefined | blockchainResult.transactionHash === undefined){
+                res.status(403).send("Failed to add to blockchain");
+                throw new Error("Failed to add to blockchain.");
+            }
+            // console.log("req.body: ", req.body);
+            req.body.key = req.body.newAddress;
+            UserModel.createUser(req.body)
+                .then((dbResult) => {
+                    // console.log("dbResult: ", dbResult);
+                    // console.log("newAddress: ", res.newAddress);
+                    res.status(201).send({id: dbResult._id, newAddress: res.newAddress});
+                });
+
+        })
+        .catch((error) => {
+            console.log("Error: ", error);
+        })
     
 };
 

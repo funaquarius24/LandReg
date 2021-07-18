@@ -20,8 +20,8 @@ describe('Blockchain function endpoint', () => {
         .post('/blockchain')
         .set('Authorization', 'Bearer ' + token)
         .send({
-            adminAddress: "0x5497Ef0DE3Da6B6d9720402Af1f22328F85719F6",
-            name: "Admin1",
+            // adminAddress: "0x5497Ef0DE3Da6B6d9720402Af1f22328F85719F6",
+            // name: "Admin1",
             state: "Lagos",
             district: "Lag"
         })

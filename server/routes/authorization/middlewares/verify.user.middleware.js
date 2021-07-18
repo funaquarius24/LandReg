@@ -35,12 +35,19 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
                 let salt = passwordFields[0];
                 let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
                 if (hash === passwordFields[1]) {
+                    if(user[0].lastName === "undefined"){
+                        var name;
+                        name = user[0].name
+                    }
+                    else{
+                        name = user[0].firstName + ' ' + user[0].lastName
+                    }
                     req.body = {
                         userId: user[0]._id,
+                        name: name,
                         email: user[0].email,
                         permissionLevel: user[0].permissionLevel,
                         provider: 'email',
-                        name: user[0].firstName + ' ' + user[0].lastName,
                         wAddress: user[0].key
                     };
                     return next();

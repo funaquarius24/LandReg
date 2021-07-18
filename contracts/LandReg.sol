@@ -12,6 +12,12 @@ contract LandReg{
         uint256 plotNumber;
         uint256 plotSize;  // * 4 decimal places
         address payable currentOwner;
+        // Land Documents
+        string cofo;
+        uint cofoDate;
+        string rofoHash;
+        uint rofoDate;
+        // Buy and sell
         uint marketValue;
         bool isAvailable;
         address requester;
@@ -80,6 +86,11 @@ contract LandReg{
 
         adminStates[state].adminAddress = admin;
     }
+
+    function getAdmin(string memory state) public view returns(address){
+        return adminStates[state].adminAddress;
+    }
+
     //Registration of land details.
     function registerLand(
         string memory state,
@@ -105,6 +116,25 @@ contract LandReg{
 
         profile[wAddress].assetList.push(id);
         return true;
+    }
+
+    function editLandDOcuments(
+        uint id,
+        string memory cofo,
+        uint cofoDate,
+        string memory rofoHash,
+        uint  rofoDate,
+        string memory stateOfAdmin
+    ) public returns (bool) {
+        require(adminStates[stateOfAdmin].adminAddress == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
+        require(lands[id].plotSize != 0 && lands[id].plotNumber != 0, "No land with this ID exists.");
+
+        lands[id].cofo = cofo;
+        lands[id].cofoDate = cofoDate;
+        lands[id].rofoHash = rofoHash;
+        lands[id].rofoDate = rofoDate;
+
+
     }
 
     function registerOwner(
