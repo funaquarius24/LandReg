@@ -1,12 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { userActions } from '../_actions';
-import { Header } from '../_components';
-import { Nav } from '../_components';
+import { alertActions, userActions } from '../_actions';
 import './Dashboard.css'
 import EnhancedTable from '../_components/SearchTable';
+import ToggleSwitch from '../_components/ToggleSwitch';
+import { searchActions } from '../_actions/search.action';
 
 class Dashboard extends React.Component {
 
@@ -14,10 +13,11 @@ class Dashboard extends React.Component {
         super(props);
 
         this.state = {
-            submitted: false,
+            searchClicked: false,
+            search_type_is_land: true
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
     componentDidMount() {
@@ -30,12 +30,54 @@ class Dashboard extends React.Component {
 
     }
 
-    handleSubmit(e) {
+    handleSearch(e) {
         e.preventDefault();
 
-        this.setState({ submitted: true });
+        this.setState({ searchClicked: true });
         const { username, password } = this.state;
+        const { id, state,  cadzone, district, plotNumber, email, key} = this.state;
         const { dispatch } = this.props;
+        
+        const data = {};
+
+        if (this.state.search_type_is_land) {
+            if(id){
+                console.log("Should search with ID!");
+                data.id = id;
+                dispatch(searchActions.land_search_id(data));
+            }
+            else if (state && !(cadzone && district && plotNumber)){
+                console.log("Should search using state information!");
+                data.state = state;
+                dispatch(searchActions.land_search_id(data));
+            }
+            else if (state && (cadzone && district && plotNumber)){
+                console.log("Should search using all information!");
+                data.state = state;
+                data.district = district;
+                data.cadzone = cadzone;
+                data.plotNumber = plotNumber;
+                dispatch(searchActions.land_search_id(data));
+            }else{
+                console.log("No enough information to search!");
+                dispatch(alertActions.error("No enough information to search!"));
+            }
+        }
+        else{
+            if(key){
+                data.key = key;
+                dispatch(searchActions.land_search_user(data));
+                console.log("Should search using key information!");
+            }else if(email){
+                data.email = email;
+                dispatch(searchActions.land_search_user(data));
+                console.log("Should search using email information!");
+            }else{
+                console.log("No enough information to search!");
+                dispatch(alertActions.error("No enough information to search!"));
+            }
+            
+        }
         if (username && password) {
             dispatch(userActions.login(username, password));
         }
@@ -67,49 +109,73 @@ class Dashboard extends React.Component {
                                                     <form className="form">
                                                         <div className="form-content">
                                                             <div className="row">
-                                                                <div className="col-sm-4 ">
+                                                                <div className="col-sm-1 ">
                                                                     <div className="form-group">
-                                                                        <label htmlFor="filename">File Name: </label>
-                                                                        <input type="text" className="form-control" name="filename" onChange={this.handleChange}></input>
+                                                                        <label htmlFor="state">ID: </label>
+                                                                        <input type="text" className="form-control" name="id" onChange={this.handleChange}></input>
                                                                     </div>
                                                                     
                                                                 </div>
-                                                                <div className="col-sm-4 ">
+                                                                <div className="col-sm-2 ">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="state">State: </label>
+                                                                        <input type="text" className="form-control" name="state" onChange={this.handleChange}></input>
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                                <div className="col-sm-3 ">
                                                                     <div className="form-group">
                                                                         <label htmlFor="cadzone">Cadzone: </label>
                                                                         <input type="text" className="form-control" name="cadzone" onChange={this.handleChange}></input>
                                                                     </div>
                                                                     
                                                                 </div>
-                                                                <div className="col-sm-4 ">
+                                                                <div className="col-sm-3 ">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="plotNumber">District: </label>
+                                                                        <input type="text" className="form-control" name="district" onChange={this.handleChange}></input>
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                                <div className="col-sm-3 ">
                                                                     <div className="form-group">
                                                                         <label htmlFor="plotNumber">Plot Number: </label>
                                                                         <input type="text" className="form-control" name="plotNumber" onChange={this.handleChange}></input>
                                                                     </div>
                                                                     
                                                                 </div>
-                                                                <div className="col-sm-4 ">
+                                                            </div>
+                                                            <div className="row">
+                                                                <div className="col-sm-3 ">
                                                                     <div className="form-group">
-                                                                        <label htmlFor="firstName">First Name: </label>
-                                                                        <input type="text" className="form-control" name="firstName" onChange={this.handleChange}></input>
+                                                                        <label htmlFor="firstName">Email: </label>
+                                                                        <input type="text" className="form-control" name="email" onChange={this.handleChange}></input>
                                                                     </div>
                                                                     
                                                                 </div>
                                                                 <div className="col-sm-4 ">
                                                                     <div className="form-group">
-                                                                        <label htmlFor="lastName">Last Name: </label>
-                                                                        <input type="text" className="form-control" name="lastName" onChange={this.handleChange}></input>
+                                                                        <label htmlFor="lastName">Key: </label>
+                                                                        <input type="text" className="form-control" name="key" onChange={this.handleChange}></input>
                                                                     </div>
                                                                     
                                                                 </div>
-                                                                <div className="col-sm-4 ">
+                                                                <div className="col-sm-2 ">
+                                                                    <div className="form-group mt-4">
+                                                                        <ToggleSwitch statevar = {this.state} />
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                                <div className="col-sm-3">
                                                                     <div className="form-group">
-                                                                        <button className="btnSubmit mt-4" type='submit' onClick={this.handleSubmit}>Search</button>
+                                                                        <button className="btnSubmit mt-4" type='submit' onClick={this.handleSearch}>Search</button>
                                                                     </div>
                                                                     
                                                                 </div>
                                                                 
                                                             </div>
+                                                        
+                                                        
                                                         </div>
                                                     </form>                                                  
                                                 </div>

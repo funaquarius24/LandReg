@@ -134,7 +134,7 @@ contract LandReg{
         lands[id].rofoHash = rofoHash;
         lands[id].rofoDate = rofoDate;
 
-
+        return true;
     }
 
     function registerOwner(
@@ -167,7 +167,7 @@ contract LandReg{
     }
 
     //to view details of land for the owner
-    function landInfoOwner(uint id) public view returns(string memory,string memory,string memory,uint,uint,address,uint, bool,address,reqStatus){
+    function landInfoFull(uint id) public view returns(string memory,string memory,string memory,uint,uint,address,uint, bool,address,reqStatus){
         landDetails memory lands_local = lands[id];
         return(
             lands_local.state,
@@ -193,6 +193,11 @@ contract LandReg{
         return uint(keccak256(abi.encodePacked(state, district, cadzone, plotNumber)))%10000000000000;
     }
 
+    // view the assets of the owner represented by this address
+    function viewAssets(address wAddress)public view returns(uint[] memory){
+        return (profile[wAddress].assetList);
+    }
+
     //push a request to the land owner
     function requstToLandOwner(uint id) public {
         require(lands[id].isAvailable);
@@ -200,10 +205,7 @@ contract LandReg{
         lands[id].isAvailable = false;
         lands[id].requestStatus = reqStatus.pending; //changes the status to pending.
     }
-    //will show assets of the function caller 
-    function viewAssets()public view returns(uint[] memory){
-        return (profile[msg.sender].assetList);
-    }
+
     //viewing request for the lands
     function viewRequest(uint property)public view returns(address){
         return(lands[property].requester);

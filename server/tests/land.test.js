@@ -4,6 +4,7 @@ const app =  'http://localhost:4200'
 var token = ''
 
 describe('Users function endpoint', () => {
+    jest.setTimeout(30000);
     it('should login with superAdmin', async () => {
         const res = await request(app)
         .post('/auth')
@@ -15,24 +16,31 @@ describe('Users function endpoint', () => {
         token = res.body['accessToken'];
     } )
 
-    it('should successfully register a new owner', async () => {
-        const res = await request(app)
-        .post('/users/addOwner')
-        .set('Authorization', 'Bearer ' + token)
-        .send({
-            name: "Owner1",
-            gender: "male",
-            dob: 88923289238,
-            ownerAddress: "15 asb str",
-            phone1: "0903245534",
-            phone2: "0903245534",
-            NIN: "6787387283",
-            email: "owner1@owner1",
-            password: "owner1Password",
-            stateOfAdmin: "lagos"
-        })
+    it('should successfully register new owners', async () => {
+        for(var i = 0; i < 10; i++){
+          var ninInt = 9439843843 + i * 512;
+          var nin = ninInt + "";
+          var email = "owner"+ (1 + i) + "@owner" + ( 1+ i);
+          const res = await request(app)
+          .post('/users/addOwner')
+          .set('Authorization', 'Bearer ' + token)
+          .send({
+              name: "Owner1",
+              gender: "male",
+              dob: 88923289238,
+              ownerAddress: "15 asb str",
+              phone1: "0903245534",
+              phone2: "0903245534",
+              NIN: nin,
+              email: email,
+              password: "owner1Password",
+              stateOfAdmin: "lagos"
+          })
+          expect(res.statusCode).toEqual(201)
+        }
+        
 
-      expect(res.statusCode).toEqual(201)
+      
     } )
 
 
@@ -50,6 +58,32 @@ describe('Users function endpoint', () => {
         })
 
         expect(res.statusCode).toEqual(201)
+    } )
+
+    it('should successfully register new lands', async () => {
+        for(var i = 0; i < 10; i++){
+            var email;
+            if(i > 5){
+                email = "owner"+ (1 + i) + "@owner" + ( 1+ i);
+            }
+            else{
+                email = "owner1@owner1";
+            }
+            var plotNumber = 245534 + (i * 33 + 1);
+            const res = await request(app)
+            .post('/blockchain/addLand')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                state: "Lagos",
+                district: "Ikeja",
+                cadzone: "A88923",
+                plotNumber: parseInt(plotNumber),
+                plotSize: parseInt(33285),
+                email: email
+            })
+
+            expect(res.statusCode).toEqual(201)
+        }
     } )
 
     it('should successfully edit a land\'s documents', async () => {

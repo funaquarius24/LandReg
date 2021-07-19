@@ -143,3 +143,31 @@ exports.editLandDocuments = (req, res, next) => {
     })
     
 }
+
+exports.searchLand = (req, res, next) => {
+    if(!req.body){
+        console.log("No body");
+        res.status(400).send("No Body");
+        throw new Error("No body.")
+    }
+    var data = req.body;
+    data.senderAddress = req.jwt.wAddress;
+    return blockchainModel.searchLand(data)
+    .then((result) => {
+        
+        if (req.isNext){
+
+            res.status(200);
+            return result; 
+        }
+        else {
+            res.status(200).send("Request Successful.");
+        }
+               
+    })
+    .catch((error) => {
+        console.log(error);
+        throw error;
+    })
+    
+}

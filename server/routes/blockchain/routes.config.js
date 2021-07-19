@@ -30,4 +30,9 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         BlockchainController.editLandDocuments
     ]);
+    app.post('/blockchain/searchLand', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        BlockchainController.searchLand
+    ]);
 };

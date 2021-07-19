@@ -28,7 +28,7 @@ class App extends React.Component {
     render() {
         const { alert } = this.props;
         const { loggedIn } = this.props;
-        console.log({loggedIn: loggedIn});
+        console.log("alert: ", alert);
         console.log(localStorage.getItem('user'));
         return (
             <div className='App-background'>

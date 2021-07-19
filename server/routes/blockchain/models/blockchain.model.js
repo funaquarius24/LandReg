@@ -133,3 +133,102 @@ exports.editLandDocuments = (data) => {
   }
   
 }
+
+exports.searchLand = (data) => {
+  if(data.search_with_id){
+    if(data.id){
+      console.log("Should search with ID!");
+      return blockchain.myContract.methods.landInfoFull(data.id)
+            .call({from: data.senderAddress, gas: 2000000})
+            .then(result => {
+              return result;
+            })
+            .catch(error => {
+              console.log("Error search id: ", error);
+            })
+    }
+    else if (data.state && !(data.cadzone && data.district && data.plotNumber)){
+        console.log("Should search using state information!");
+        return blockchain.myContract.methods.landInfoFull(data.state)
+            .call({from: data.senderAddress, gas: 2000000})
+            .then(result =>  {
+              return result;
+            })
+            .catch(error => {
+              console.log("Error search with sate: ", error);
+            })
+    }
+    else if (data.state && (data.cadzone && data.district && data.plotNumber)){
+        console.log("Should search using all information!");
+        return blockchain.myContract.methods.computeId(
+          data.state,
+          data.district,
+          data.cadzone,
+          data.plotNumber
+        )
+        .call({from: data.senderAddress, gas: 2000000})
+        .then((result) => {
+          data.land_id = result;
+          console.log("Result of computeID: ", result);
+          return blockchain.myContract.methods.landInfoFull(data.land_id)
+            .call({from: data.senderAddress, gas: 2000000})
+            .then(result =>  {
+              return result;
+            })
+            .catch(error => {
+              console.log("Error search with sate: ", error);
+              throw error;
+            })
+        })
+        .then((result) => {
+          data.receipt = result;
+          return data;
+        })
+        .catch(error => {
+          err = "" + error;
+          console.log("Error: ");
+          console.log(error);
+          throw error;
+        })
+
+    }else{
+        console.log("No enough information to search!");
+        throw "No enough information to search!";
+    }
+
+  }
+  else{
+    const assetsInfo = {};
+    var promise_to_resolve;
+    const blockchain_assets_list = (key) => blockchain.myContract.methods.viewAssets(key)
+      .call({from: data.senderAddress, gas: 2000000})
+      .then(result => {
+        console.log("viewAssets result: ", result);
+        return result;
+      })
+      .catch(error => {
+        console.log("Error occured whie vewing assets: ", error);
+      })
+    if(data.key){
+      console.log("Should search using key information!");
+      promise_to_resolve = blockchain_assets_list(data.key);
+    }else if(data.email){
+        console.log("Should search using email information!");
+        usersmodel.findByEmail(data.email)
+          .then((result) => {
+            data.ownerWalletAddress = result[0].key;
+            // console.log("ownerWalletAddress result: ", result[0].key);
+            promise_to_resolve = blockchain_assets_list(data.ownerWalletAddress);
+          })
+
+    }else{
+        console.log("No enough information to search!");
+        throw "No enough information to search!";
+    }
+    promise_to_resolve.then(result => {
+      console.log("result of searchng with user: ", result);
+    })
+  }
+    
+}
+

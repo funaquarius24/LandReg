@@ -1,0 +1,3 @@
+db in use: mineDB
+get all users: db.users.find()
+delete all users except suAdmin: db.users.remove({name: {$ne: "suAdmin"}})

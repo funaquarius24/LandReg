@@ -31,24 +31,26 @@ describe('Users function endpoint', () => {
     } )
 
     it('should successfully register a new owner', async () => {
-        const res = await request(app)
-        .post('/users/addOwner')
-        .set('Authorization', 'Bearer ' + token)
-        .send({
-            name: "Owner1",
-            gender: "male",
-            dob: 88923289238,
-            ownerAddress: "15 asb str",
-            phone1: "0903245534",
-            phone2: "0903245534",
-            NIN: "6787387283",
-            email: "owner1@owner1",
-            password: "owner1Password",
-            stateOfAdmin: "lagos"
-        })
+      const res = await request(app)
+      .post('/users/addOwner')
+      .set('Authorization', 'Bearer ' + token)
+      .send({
+          name: "Owner0",
+          gender: "male",
+          dob: 88923289238,
+          ownerAddress: "15 asb str",
+          phone1: "0903245534",
+          phone2: "0903245534",
+          NIN: "67873872830",
+          email: "owner0@owner0",
+          password: "owner1Password",
+          stateOfAdmin: "lagos"
+      })
 
-      expect(res.statusCode).toEqual(201)
-    } )
+    expect(res.statusCode).toEqual(201)
+  } )
+
+    
 
     it('should get list of users', async () => {
         const res = await request(app)
@@ -60,7 +62,7 @@ describe('Users function endpoint', () => {
         expect(res.statusCode).toEqual(200)
     } )
 
-    it('should fail to create a new user', async () => {
+    it('should fail to create a new user -- assume already exists', async () => {
         const res = await request(app)
           .post('/users')
           .set('Authorization', 'Bearer ' + token)
