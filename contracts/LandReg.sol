@@ -22,7 +22,7 @@ contract LandReg{
         bool isAvailable;
         address requester;
         reqStatus requestStatus; 
-        uint id;
+        string id;
     }
 
     struct ownerDetails {
@@ -51,14 +51,14 @@ contract LandReg{
 
     //profile of a client
     struct profiles{
-        uint[] assetList;   
+        string[] assetList;   
     }
 
     struct landState {
-        uint[] ids;
+        string[] ids;
     }
 
-    mapping(uint => landDetails) lands;
+    mapping(string => landDetails) lands;
     mapping(string => landState) landStates; // Push land ids inside their respestive states
     address owner;
     mapping( address => adminDetails) admins;
@@ -101,7 +101,9 @@ contract LandReg{
         address payable wAddress
         ) public returns(bool) {
         require(adminStates[state].adminAddress == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
-        uint id = computeId(state,district,cadzone,plotNumber);
+        uint id_uint = computeId(state,district,cadzone,plotNumber);
+        string memory id = uint2str(id_uint);
+        // require(adminStates[state].adminAddress != msg.sender && owner != msg.sender, "Only admins are allowed to perform this operation.");
         require(lands[id].plotSize == 0 && lands[id].plotNumber == 0, "Land with this ID already exists.");
         lands[id].state = state;
         lands[id].district = district;
@@ -118,8 +120,49 @@ contract LandReg{
         return true;
     }
 
-    function editLandDOcuments(
-        uint id,
+    // function uint2str(uint _i) internal returns (string memory _uintAsString) {
+    //     if (_i == 0) {
+    //         return "0";
+    //     }
+    //     uint j = _i;
+    //     uint len;
+    //     while (j != 0) {
+    //         len++;
+    //         j /= 10;
+    //     }
+    //     bytes memory bstr = new bytes(len);
+    //     uint k = len - 1;
+    //     while (_i != 0) {
+    //         bstr[k--] = bytes1(uint8(48 + _i % 10));
+    //         _i /= 10;
+    //     }
+    //     return string(bstr);
+    // }
+
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len;
+        while (_i != 0) {
+            k = k-1;
+            uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+            bytes1 b1 = bytes1(temp);
+            bstr[k] = b1;
+            _i /= 10;
+        }
+        return string(bstr);
+    }
+
+    function editLandDocuments(
+        string memory id,
         string memory cofo,
         uint cofoDate,
         string memory rofoHash,
@@ -167,8 +210,9 @@ contract LandReg{
     }
 
     //to view details of land for the owner
-    function landInfoFull(uint id) public view returns(string memory,string memory,string memory,uint,uint,address,uint, bool,address,reqStatus){
+    function landInfoFull(string memory id) public view returns(string memory,string memory,string memory,uint,uint,address,uint, bool,address,reqStatus){
         landDetails memory lands_local = lands[id];
+        require(lands_local.plotSize != 0 && lands_local.plotNumber != 0, "No land with this ID exists.");
         return(
             lands_local.state,
             lands_local.district,
@@ -182,9 +226,13 @@ contract LandReg{
             lands_local.requestStatus
             );
     }
+
+    function landInfoStates(string memory state) public view returns(string[] memory state_ids){
+        state_ids = landStates[state].ids;
+    }
     
     //to view details of land for the buyer
-    function landInfoBuyer(uint id) public view returns(address,uint,bool,address,reqStatus){
+    function landInfoBuyer(string memory id) public view returns(address,uint,bool,address,reqStatus){
         return(lands[id].currentOwner, lands[id].marketValue, lands[id].isAvailable, lands[id].requester, lands[id].requestStatus);
     }
 
@@ -194,12 +242,12 @@ contract LandReg{
     }
 
     // view the assets of the owner represented by this address
-    function viewAssets(address wAddress)public view returns(uint[] memory){
+    function viewAssets(address wAddress)public view returns(string[] memory){
         return (profile[wAddress].assetList);
     }
 
     //push a request to the land owner
-    function requstToLandOwner(uint id) public {
+    function requstToLandOwner(string memory id) public {
         require(lands[id].isAvailable);
         lands[id].requester = msg.sender;
         lands[id].isAvailable = false;
@@ -207,11 +255,11 @@ contract LandReg{
     }
 
     //viewing request for the lands
-    function viewRequest(uint property)public view returns(address){
+    function viewRequest(string memory property)public view returns(address){
         return(lands[property].requester);
     }
     //processing request for the land by accepting or rejecting
-    function processRequest(uint property,reqStatus status) public {
+    function processRequest(string memory property,reqStatus status) public {
         require(lands[property].currentOwner == msg.sender);
         lands[property].requestStatus = status;
         if(status == reqStatus.reject){
@@ -220,13 +268,13 @@ contract LandReg{
         }
     }
     //availing lands for sale.
-    function makeAvailable(uint property)public{
+    function makeAvailable(string memory property)public{
         require(lands[property].currentOwner == msg.sender);
         lands[property].isAvailable=true;
     } 
 
     //buying the approved property
-    function buyProperty(uint property)public payable{
+    function buyProperty(string memory property)public payable{
         require(lands[property].requestStatus == reqStatus.approved);
         require(msg.value >= (lands[property].marketValue+((lands[property].marketValue)/10)));
         lands[property].currentOwner.transfer(lands[property].marketValue);
@@ -239,18 +287,23 @@ contract LandReg{
         
     }
     //removing the ownership of seller for the lands. and it is called by the buyProperty function
-    function removeOwnership(address previousOwner,uint id)private{
+    function removeOwnership(address previousOwner,string memory id)private{
         uint index = findId(id,previousOwner);
         profile[previousOwner].assetList[index]=profile[previousOwner].assetList[profile[previousOwner].assetList.length-1];
         profile[previousOwner].assetList.pop();
     }
     //for finding the index of a perticular id
-    function findId(uint id,address user)public view returns(uint){
+    function findId(string memory id,address user)public view returns(uint){
         uint i;
         for(i=0;i<profile[user].assetList.length;i++){
-            if(profile[user].assetList[i] == id)
+            // if(profile[user].assetList[i] == id)
+            if(compareStrings(profile[user].assetList[i], id))
                 return i;
         }
         return i;
+    }
+
+    function compareStrings(string memory a, string memory b) public pure returns (bool) {
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
 }

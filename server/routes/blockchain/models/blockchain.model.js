@@ -78,7 +78,7 @@ exports.registerLand = (data) => {
       err = "Add Land " + error;
       // console.log("Error registering land.");
       // console.log(error);
-      throw err;
+      throw error;
     })
   })
     
@@ -87,8 +87,8 @@ exports.registerLand = (data) => {
 exports.editLandDocuments = (data) => {
   console.log("editLandDocuments: ", data);
   const edit_land_func = (data) => {
-    return blockchain.myContract.methods.editLandDOcuments(
-      data.land_id, 
+    return blockchain.myContract.methods.editLandDocuments(
+      data.land_id + "", 
       data.cofo,
       data.cofoDate,
       data.rofoHash,
@@ -99,7 +99,7 @@ exports.editLandDocuments = (data) => {
         return receipt;
     })
     .catch(error => {
-      console.log(error);
+      console.log("error for blockchain editlanddocuments: ", error);
       throw error;
     })
   }
@@ -137,21 +137,23 @@ exports.editLandDocuments = (data) => {
 exports.searchLand = (data) => {
   if(data.search_with_id){
     if(data.id){
-      console.log("Should search with ID!");
-      return blockchain.myContract.methods.landInfoFull(data.id)
+      console.log("Should search with ID!", data.id);
+      return blockchain.myContract.methods.landInfoFull(data.id + "")
             .call({from: data.senderAddress, gas: 2000000})
             .then(result => {
               return result;
             })
             .catch(error => {
               console.log("Error search id: ", error);
+              throw error;
             })
     }
     else if (data.state && !(data.cadzone && data.district && data.plotNumber)){
         console.log("Should search using state information!");
-        return blockchain.myContract.methods.landInfoFull(data.state)
+        return blockchain.myContract.methods.landInfoStates(data.state)
             .call({from: data.senderAddress, gas: 2000000})
             .then(result =>  {
+              console.log("result of landInfoStates: ", result);
               return result;
             })
             .catch(error => {
@@ -173,6 +175,7 @@ exports.searchLand = (data) => {
           return blockchain.myContract.methods.landInfoFull(data.land_id)
             .call({from: data.senderAddress, gas: 2000000})
             .then(result =>  {
+              console.log("result of searching using all info: ", result);
               return result;
             })
             .catch(error => {
@@ -199,35 +202,70 @@ exports.searchLand = (data) => {
   }
   else{
     const assetsInfo = {};
-    var promise_to_resolve;
-    const blockchain_assets_list = (key) => blockchain.myContract.methods.viewAssets(key)
-      .call({from: data.senderAddress, gas: 2000000})
-      .then(result => {
-        console.log("viewAssets result: ", result);
-        return result;
-      })
-      .catch(error => {
-        console.log("Error occured whie vewing assets: ", error);
-      })
-    if(data.key){
+    if (data.key) {
       console.log("Should search using key information!");
-      promise_to_resolve = blockchain_assets_list(data.key);
-    }else if(data.email){
-        console.log("Should search using email information!");
-        usersmodel.findByEmail(data.email)
-          .then((result) => {
-            data.ownerWalletAddress = result[0].key;
-            // console.log("ownerWalletAddress result: ", result[0].key);
-            promise_to_resolve = blockchain_assets_list(data.ownerWalletAddress);
-          })
+      return blockchain.myContract.methods.viewAssets(data.key)
+        .call({from: data.senderAddress, gas: 2000000})
+        .then(results => {
+          console.log("viewAssets result for key: ", results);
+          results.forEach(element => {
+            blockchain.myContract.methods.landInfoFull(element)
+            .call({from: data.senderAddress, gas: 2000000})
+            .then(result =>  {
+              assetsInfo[element] = result;
+            })
+            .catch(error => {
 
-    }else{
-        console.log("No enough information to search!");
+              console.log("Error getting info wth id.: ");
+              throw error;
+            });
+            
+          });
+        })
+        .then(() => {
+          return assetsInfo;
+        })
+        .catch(error => {
+          console.log("Error occured while searching with key.");
+          throw error;
+        })
+      
+    } else if(data.email) {
+      console.log("Should search using email information!");
+      return usersmodel.findByEmail(data.email)
+      .then((result) => {
+        data.ownerWalletAddress = result[0].key;
+        // console.log("ownerWalletAddress result: ", result[0].key);
+        return data.ownerWalletAddress;
+      })
+      .then(result => {
+        return blockchain.myContract.methods.viewAssets(result)
+          .call({from: data.senderAddress, gas: 2000000})
+      })
+      .then(results => {
+        console.log("viewAssets result for email: ", results);
+        results.forEach(element => {
+          blockchain.myContract.methods.landInfoFull(element)
+          .call({from: data.senderAddress, gas: 2000000})
+          .then(result =>  {
+            assetsInfo[element] = result;
+          })
+          .catch(error => {
+
+            console.log("Error getting info wth id.: ");
+            throw error;
+          });
+          
+        });
+      })
+      .then(() => {
+        return assetsInfo;
+      })
+    }
+    else{
+      console.log("No enough information to search!");
         throw "No enough information to search!";
     }
-    promise_to_resolve.then(result => {
-      console.log("result of searchng with user: ", result);
-    })
   }
     
 }

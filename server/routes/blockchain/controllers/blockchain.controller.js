@@ -68,13 +68,17 @@ exports.insertOwner = (req, res, next) => {
                
     })
     .catch((error) => {
-        console.log(error);
+        var err = error + "";
+        err = err.split("\n"); 
+        console.log("err: ", err);
         if (req.isNext){
 
             throw error;
         }
         else {
             res.status(500).send(error);
+            err = "Failed to insert to blockchain. " + err
+            console.log(err);
         }
         
     })
@@ -104,12 +108,15 @@ exports.insertLand = (req, res, next) => {
                
     })
     .catch((error) => {
-        console.log(error);
+        var err = error + "";
+        err = err.split("\n"); 
+        console.log("err: ", error);
         if (req.isNext){
             throw error;
         }
         else {
-            res.status(303).send("Failed to register land to blockchan.");
+            err = "Failed to register land to blockchan. " + error;
+            res.status(303).send(err);
         }
         
     })
@@ -138,8 +145,20 @@ exports.editLandDocuments = (req, res, next) => {
                
     })
     .catch((error) => {
-        console.log(error);
-        throw error;
+        // console.log(error);
+        
+        if (req.isNext){
+
+            res.status(303);
+            throw error;
+        }
+        else {
+            var err = error + "";
+            err = err.split("\n"); 
+            console.log("err: ", err);
+            err = "error for blockchain editLandDocuments: " + err;
+            res.status(303).send(err);
+        }
     })
     
 }
@@ -166,8 +185,18 @@ exports.searchLand = (req, res, next) => {
                
     })
     .catch((error) => {
-        console.log(error);
-        throw error;
+        if (req.isNext){
+
+            res.status(404);
+            throw error;
+        }
+        else {
+            var err = error + "";
+            err = err.split("\n"); 
+            console.log("err: ", err);
+            err = "error for blockchain editLandDocuments: " + err;
+            res.status(404).send(err);
+        }
     })
     
 }

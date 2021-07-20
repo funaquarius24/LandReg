@@ -2,7 +2,7 @@ const request = require('supertest')
 // const app = require('../app')
 const app =  'http://localhost:4200'
 var token = ''
-
+jest.setTimeout(8000);
 describe('Users function endpoint', () => {
     jest.setTimeout(30000);
     it('should login with superAdmin', async () => {
@@ -16,6 +16,8 @@ describe('Users function endpoint', () => {
         token = res.body['accessToken'];
     } )
 
+    // Decided o include this in land test so that I can use the values to register land
+    // Although I later didn't use it...
     it('should successfully register new owners', async () => {
         for(var i = 0; i < 10; i++){
           var ninInt = 9439843843 + i * 512;
