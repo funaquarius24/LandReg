@@ -1,9 +1,9 @@
 import { searchConstants } from '../_constants';
 import { searchService } from '../_services';
-import { alertActions } from './';
+import { alertActions } from '.';
 import { history } from '../_helpers';
 
-export const searchActions = {
+export const landOwnerActions = {
     land_search_id,
     land_search_user
 };

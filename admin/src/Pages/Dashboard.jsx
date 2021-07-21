@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { alertActions, userActions } from '../_actions';
 import './Dashboard.css'
-import EnhancedTable from '../_components/SearchTable';
+import SearchTable from '../_components/SearchTable';
 import ToggleSwitch from '../_components/ToggleSwitch';
 import { searchActions } from '../_actions/search.action';
 
@@ -22,6 +22,7 @@ class Dashboard extends React.Component {
     }
     componentDidMount() {
         // this.props.dispatch(userActions.getAll());
+        // console.log("dashboard search_result: ",this.props.search_result);
     }
 
     handleChange(e) {
@@ -187,7 +188,7 @@ class Dashboard extends React.Component {
                                     <div className="col-md-1"></div>
                                     <div className="col-md-10">
                                         <p>Search Results</p>
-                                        <EnhancedTable />
+                                        <SearchTable />
                                     </div>
                                 </div>
                             </div>
@@ -202,11 +203,12 @@ class Dashboard extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { users, authentication } = state;
+    const { users, authentication, search } = state;
     const { user } = authentication;
     return {
         user,
-        users
+        users,
+        search
     };
 }
 

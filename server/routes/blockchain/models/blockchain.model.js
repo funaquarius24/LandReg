@@ -135,6 +135,8 @@ exports.editLandDocuments = (data) => {
 }
 
 exports.searchLand = (data) => {
+  console.log("data: ", data);
+  const assetsInfo = {};
   if(data.search_with_id){
     if(data.id){
       console.log("Should search with ID!", data.id);
@@ -156,8 +158,43 @@ exports.searchLand = (data) => {
               console.log("result of landInfoStates: ", result);
               return result;
             })
+            .then(results => {
+              // console.log("viewAssets result for state: ", results);
+              for(var i = 0; i < results.length; i++){
+                assetsInfo[results[i]] = 
+                  blockchain.myContract.methods.landInfoFull(results[i])
+                  .call({from: data.senderAddress, gas: 2000000})
+                  .then(result => {
+                    return Promise.resolve(result);
+                  })
+                  .catch(error => {
+        
+                    console.log("Error getting info with id for state info.: ");
+                    throw error;
+                  });
+              }
+
+              // console.log("assetsInfo in for: ", assetsInfo);
+
+              return assetsInfo;
+            })
+            .then((results) => {
+              var values = Object.keys(results).map(function(key){
+                return results[key];
+              });
+              return Promise.all(values); 
+              
+            })
+            .then(results => {
+              var assetsInfoKeys = Object.keys(assetsInfo);
+              for (var i = 0; i < results.length; i++) {
+                assetsInfo[assetsInfoKeys[i]] = results[i];
+              }
+              return assetsInfo;
+            })
             .catch(error => {
-              console.log("Error search with sate: ", error);
+              console.log("Error search with state: ", error);
+              throw error;
             })
     }
     else if (data.state && (data.cadzone && data.district && data.plotNumber)){
@@ -201,13 +238,12 @@ exports.searchLand = (data) => {
 
   }
   else{
-    const assetsInfo = {};
     if (data.key) {
       console.log("Should search using key information!");
       return blockchain.myContract.methods.viewAssets(data.key)
         .call({from: data.senderAddress, gas: 2000000})
         .then(results => {
-          console.log("viewAssets result for key: ", results);
+          // console.log("viewAssets result for key: ", results);
           results.forEach(element => {
             blockchain.myContract.methods.landInfoFull(element)
             .call({from: data.senderAddress, gas: 2000000})
@@ -242,24 +278,48 @@ exports.searchLand = (data) => {
         return blockchain.myContract.methods.viewAssets(result)
           .call({from: data.senderAddress, gas: 2000000})
       })
-      .then(results => {
-        console.log("viewAssets result for email: ", results);
-        results.forEach(element => {
-          blockchain.myContract.methods.landInfoFull(element)
-          .call({from: data.senderAddress, gas: 2000000})
-          .then(result =>  {
-            assetsInfo[element] = result;
-          })
-          .catch(error => {
-
-            console.log("Error getting info wth id.: ");
-            throw error;
-          });
-          
-        });
+      .then(result =>  {
+        console.log("result of viewAssets: ", result);
+        return result;
       })
-      .then(() => {
+      .then(results => {
+        // console.log("viewAssets result for state: ", results);
+        for(var i = 0; i < results.length; i++){
+          assetsInfo[results[i]] = 
+            blockchain.myContract.methods.landInfoFull(results[i])
+            .call({from: data.senderAddress, gas: 2000000})
+            .then(result => {
+              return Promise.resolve(result);
+            })
+            .catch(error => {
+  
+              console.log("Error getting info with id for email info.: ");
+              throw error;
+            });
+        }
+
+        // console.log("assetsInfo in for: ", assetsInfo);
+
         return assetsInfo;
+      })
+      .then((results) => {
+        var values = Object.keys(results).map(function(key){
+          return results[key];
+        });
+        return Promise.all(values); 
+        
+      })
+      .then(results => {
+        var assetsInfoKeys = Object.keys(assetsInfo);
+        for (var i = 0; i < results.length; i++) {
+          assetsInfo[assetsInfoKeys[i]] = results[i];
+        }
+        console.log("assetsInfo: ", assetsInfo);
+        return assetsInfo;
+      })
+      .catch(error => {
+        console.log("error occured at usage of email");
+        throw error;
       })
     }
     else{

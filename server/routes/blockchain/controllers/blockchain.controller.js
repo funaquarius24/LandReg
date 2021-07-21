@@ -170,6 +170,7 @@ exports.searchLand = (req, res, next) => {
         throw new Error("No body.")
     }
     var data = req.body;
+    console.log("controller data: ", data);
     data.senderAddress = req.jwt.wAddress;
     return blockchainModel.searchLand(data)
     .then((result) => {
@@ -177,16 +178,18 @@ exports.searchLand = (req, res, next) => {
         if (req.isNext){
 
             res.status(200);
-            return result; 
+            return Array.isArray(result) ? result : [result]; 
         }
         else {
-            res.status(200).send("Request Successful.");
+            // res.result = result;
+            console.log("result: ", result);
+            const val = Array.isArray(result) ? result : [result]
+            res.status(200).send(val);
         }
                
     })
     .catch((error) => {
         if (req.isNext){
-
             res.status(404);
             throw error;
         }

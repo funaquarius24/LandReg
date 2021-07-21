@@ -12,6 +12,7 @@ contract LandReg{
         uint256 plotNumber;
         uint256 plotSize;  // * 4 decimal places
         address payable currentOwner;
+        bool isCertified;
         // Land Documents
         string cofo;
         uint cofoDate;
@@ -120,25 +121,6 @@ contract LandReg{
         return true;
     }
 
-    // function uint2str(uint _i) internal returns (string memory _uintAsString) {
-    //     if (_i == 0) {
-    //         return "0";
-    //     }
-    //     uint j = _i;
-    //     uint len;
-    //     while (j != 0) {
-    //         len++;
-    //         j /= 10;
-    //     }
-    //     bytes memory bstr = new bytes(len);
-    //     uint k = len - 1;
-    //     while (_i != 0) {
-    //         bstr[k--] = bytes1(uint8(48 + _i % 10));
-    //         _i /= 10;
-    //     }
-    //     return string(bstr);
-    // }
-
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";
@@ -177,6 +159,13 @@ contract LandReg{
         lands[id].rofoHash = rofoHash;
         lands[id].rofoDate = rofoDate;
 
+        if(!(compareStrings(cofo, "") && compareStrings(rofoHash, ""))){
+            lands[id].isCertified = true;
+        }
+        else{
+            lands[id].isCertified = false;
+        }
+
         return true;
     }
 
@@ -210,21 +199,56 @@ contract LandReg{
     }
 
     //to view details of land for the owner
-    function landInfoFull(string memory id) public view returns(string memory,string memory,string memory,uint,uint,address,uint, bool,address,reqStatus){
+    function landInfoFull(string memory id) public view returns(
+        string memory state,
+        string memory district,
+        string memory cadzone,
+        uint plotNumber,
+        uint plotSize,
+        address currentOwner,
+        uint marketValue,
+        bool isAvailable,
+        address requester,
+        reqStatus requestStatus,
+        bool isCertified ){
         landDetails memory lands_local = lands[id];
         require(lands_local.plotSize != 0 && lands_local.plotNumber != 0, "No land with this ID exists.");
-        return(
-            lands_local.state,
-            lands_local.district,
-            lands_local.cadzone,
-            lands_local.plotNumber,
-            lands_local.plotSize,
-            lands_local.currentOwner,
-            lands_local.marketValue,
-            lands_local.isAvailable,
-            lands_local.requester,
-            lands_local.requestStatus
-            );
+        
+        state = lands_local.state;
+        district = lands_local.district;
+        cadzone = lands_local.cadzone;
+        plotNumber = lands_local.plotNumber;
+        plotSize = lands_local.plotSize;
+        currentOwner = lands_local.currentOwner;
+        marketValue = lands_local.marketValue;
+        isAvailable = lands_local.isAvailable;
+        requester = lands_local.requester;
+        requestStatus = lands_local.requestStatus;
+        isCertified = lands_local.isCertified;
+            
+    }
+
+    function ownerInfo(address wAddress) public view returns(
+        string memory name,
+        string memory gender,
+        uint dob,
+        string memory ownerAddress,
+        string memory phone1,
+        string memory phone2,
+        string memory NIN,
+        string memory email
+    ) {
+        require(compareStrings(owners[wAddress].email, ""), "This owner does not exist.");
+        ownerDetails memory tmpOwner = owners[wAddress];
+        name = tmpOwner.name;
+        gender = tmpOwner.gender;
+        dob = tmpOwner.dob;
+        ownerAddress = tmpOwner.ownerAddress;
+        phone1 = tmpOwner.phone1;
+        phone2 = tmpOwner.phone2;
+        NIN = tmpOwner.NIN;
+        email = tmpOwner.email;
+
     }
 
     function landInfoStates(string memory state) public view returns(string[] memory state_ids){

@@ -6,7 +6,7 @@ import { history } from '../_helpers';
 import { alertActions } from '../_actions';
 import { PrivateRoute } from '../_components';
 import { HomePage } from '../HomePage';
-import { LoginPage } from '../LoginPage';
+import { LoginPage } from '../Pages';
 import { Dashboard } from '../Pages';
 import { DetailsPage } from '../Pages';
 import { EditPage, ApplyPage, AddAdminPage } from '../Pages';

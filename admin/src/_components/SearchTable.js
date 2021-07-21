@@ -22,12 +22,23 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { connect } from 'react-redux';
+import { searchActions } from '../_actions/search.action';
+import {  userActions } from '../_actions';
 
-function createData(name, cadzone, plotNumber, ownerName, status) {
-  return { name, cadzone, plotNumber, ownerName, status };
+import {useDispatch, useSelector} from "react-redux"; 
+
+function createData(land_id, plotNumber, state, district, cadzone, isCertified) {
+  return { land_id, plotNumber, state, district, cadzone, isCertified  };
 }
 
 const rows = [
+  createData('Cupcake', "305", "3.7", "67", "4.3", true),
+  createData('Donut', "452", "25.0", "51", "4.9", false),
+  createData('Eclair', "262", "16.0", "24", "6.0", true),
+  createData('Frozen yoghurt', "159", "6.0", "24", "4.0", true)
+];
+
+const rows1 = [
   createData('Cupcake', 305, 3.7, 67, 4.3),
   createData('Donut', 452, 25.0, 51, 4.9),
   createData('Eclair', 262, 16.0, 24, 6.0),
@@ -70,11 +81,12 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'File Name' },
-  { id: 'cadzone', numeric: true, disablePadding: false, label: 'Cadzone' },
-  { id: 'plotNumber', numeric: true, disablePadding: false, label: 'Plot Number' },
-  { id: 'ownerName', numeric: true, disablePadding: false, label: 'Owner Name' },
-  { id: 'status', numeric: true, disablePadding: false, label: 'Status' },
+  { id: 'land_id', numeric: false, disablePadding: true, label: 'Land ID' },
+  { id: 'plotNumber', numeric: false, disablePadding: false, label: 'Plot Number' },
+  { id: 'state', numeric: false, disablePadding: false, label: 'State' },
+  { id: 'district', numeric: false, disablePadding: false, label: 'District' },
+  { id: 'cadzone', numeric: false, disablePadding: false, label: 'Cadzone' },
+  { id: 'isCertified', numeric: false, disablePadding: false, label: 'Certified?' }
 ];
 
 function EnhancedTableHead(props) {
@@ -90,7 +102,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.numeric ? 'left' : 'right'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -159,7 +171,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Nutrition
+          Land Info
         </Typography>
       )}
 
@@ -208,7 +220,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchTable() {
+export default function SearchTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('cadzone');
@@ -216,6 +228,36 @@ export default function SearchTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const search = useSelector(state => state.search);
+  var search_result = {};
+
+  const properRows = [];
+  rows.length = 0;
+
+  // console.log("search in table: ", Object.keys(search));
+  if(search.items && Object.keys(search).length > 0){
+    search_result = search.items;
+    // console.log("search_results in table: ", search_result);
+    var search_result_keys = Object.keys(search_result);
+    // console.log("search_result_keys: ", search_result_keys);
+    search_result_keys.forEach((element, index, array) => {
+      const tm1 = array[element];
+      var tmp = createData(
+        element, 
+        search_result[element].plotNumber,
+        search_result[element].state, 
+        search_result[element].district, 
+        search_result[element].cadzone,  
+        search_result[element].isCertified);
+      properRows.push(tmp);
+    });
+    // console.log("properRows: ", properRows);
+    properRows.forEach((element, index, array) => {
+      rows[index] = element;
+    });
+    // console.log("rows: ", rows);
+  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -314,30 +356,31 @@ export default function SearchTable() {
             />
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.land_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      onDoubleClick={(event) => handleDblClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.land_id)}
+                      onDoubleClick={(event) => handleDblClick(event, row.land_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.land_id}
                       selected={isItemSelected}
                     >
                       
                       <TableCell component="th" id={labelId} scope="row">
-                        {row.name}
+                        {row.land_id}
                       </TableCell>
-                      <TableCell align="right">{row.cadzone}</TableCell>
                       <TableCell align="right">{row.plotNumber}</TableCell>
-                      <TableCell align="right">{row.ownerName}</TableCell>
-                      <TableCell align="right">{row.status}</TableCell>
+                      <TableCell align="right">{row.state}</TableCell>
+                      <TableCell align="right">{row.district}</TableCell>
+                      <TableCell align="right">{row.cadzone}</TableCell>
+                      <TableCell align="right">{row.isCertified ? "Certified" : "Not Certified"}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -368,12 +411,12 @@ export default function SearchTable() {
 }
 
 function mapStateToProps(state) {
-    const { users, authentication } = state;
-    const { user } = authentication;
-    return {
-        user,
-        users
-    };
+  const { authentication, search } = state;
+  const { user } = authentication;
+  return {
+      user,
+      search
+  };
 }
 
 const connectedSearchTable = connect(mapStateToProps)(SearchTable);
