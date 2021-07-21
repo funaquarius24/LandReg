@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
@@ -40,7 +40,7 @@ class App extends React.Component {
                             <div>
                                 <Header />
                                 <PrivateRoute exact path="/" component={Dashboard} />
-                                <Route exact path="/login" component={LoginPage} />
+                                <Route exact path="/login" component={withRouter(LoginPage)} />
                                 <PrivateRoute exact path="/details" component={DetailsPage} />
                                 <PrivateRoute exact path="/edit" component={EditPage} />
                                 <PrivateRoute exact path="/apply" component={ApplyPage} />
