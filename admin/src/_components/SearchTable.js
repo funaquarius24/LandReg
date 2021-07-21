@@ -238,7 +238,10 @@ export default function SearchTable(props) {
   // console.log("search in table: ", Object.keys(search));
   if(search.items && Object.keys(search).length > 0){
     search_result = search.items;
-    // console.log("search_results in table: ", search_result);
+    console.log("search_results in table: ", search_result);
+    if(("state" in search_result && "plotNumber" in search_result)){
+      search_result = [search_result];
+    }
     var search_result_keys = Object.keys(search_result);
     // console.log("search_result_keys: ", search_result_keys);
     search_result_keys.forEach((element, index, array) => {

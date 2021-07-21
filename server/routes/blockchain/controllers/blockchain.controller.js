@@ -178,13 +178,12 @@ exports.searchLand = (req, res, next) => {
         if (req.isNext){
 
             res.status(200);
-            return Array.isArray(result) ? result : [result]; 
+            return result; 
         }
         else {
             // res.result = result;
             console.log("result: ", result);
-            const val = Array.isArray(result) ? result : [result]
-            res.status(200).send(val);
+            res.status(200).send(result);
         }
                
     })
