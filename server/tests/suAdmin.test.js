@@ -6,12 +6,12 @@ var token = ''
 describe('Create suAdmin endpoint', () => {
     it('should create superAdmin account', async () => {
         const res = await request(app)
-        .post('/users')
+        .post('/su')
         .send({
             name: 'suAdmin',
             email: 'suAdmin',
             password: 'suAdmin',
-            key: '0x2D3216c96Fb34f528F1B04b34a2A9eC54E17a5d3',
+            key: '0xdD3DB20111887bBed8017A51078f216B2Fc3eA6A',
             permissionLevel: 4096
         })
         expect(res.statusCode).toEqual(201)

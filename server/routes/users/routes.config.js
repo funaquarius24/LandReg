@@ -8,6 +8,10 @@ const ADMIN = config.permissionLevels.ADMIN;
 const LAND_OWNER = config.permissionLevels.LAND_OWNER;
 
 exports.routesConfig = function (app) {
+    // Note: this is a loophole in the system. it is only to be used to create suAdmin once. It should be deleted after deployment.
+    app.post('/su', [
+        UsersController.insert
+    ]);
     app.post('/users', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
