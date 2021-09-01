@@ -3,6 +3,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import "./components.css"
 
+import {  landActions, userActions } from '../_actions';
+
+import {useDispatch, useSelector} from "react-redux"; 
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex'
@@ -13,7 +18,7 @@ export default function OwnerComponent(props) {
   const classes = useStyles();
   const { view, create } = props;  
 
-  const state = {
+  const local_state = {
     name: "",
     gender: "",
     dob: "",
@@ -25,6 +30,26 @@ export default function OwnerComponent(props) {
     walletAddress: "",
     password: ""
     
+  }
+
+  const dispatch = useDispatch();
+  const landOwnerInfo = useSelector(state => state.landOwner);
+
+  console.log("landOwnerInfo: ", landOwnerInfo);
+
+  if(landOwnerInfo.items && Object.keys(landOwnerInfo).length > 0){
+    console.log("landOwnerInfo items: ", landOwnerInfo.items);
+    local_state.name = landOwnerInfo.items.name;
+    local_state.gender = landOwnerInfo.items.gender;
+    local_state.dob = landOwnerInfo.items.dob;
+    local_state.address = landOwnerInfo.items.ownerAddress;
+    local_state.nin = landOwnerInfo.items.NIN;
+    local_state.phone1 = landOwnerInfo.items.phone1;
+    local_state.phone2 = landOwnerInfo.items.phone2;
+    local_state.email = landOwnerInfo.items.email;
+    local_state.walletAddress = landOwnerInfo.items.wAddress;
+
+    console.log("local_state_after mod: ", local_state)
   }
 
 
@@ -54,8 +79,8 @@ export default function OwnerComponent(props) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // setState({ [name]: value });
-    state[name] = value;
+    // setlocal_state({ [name]: value });
+    local_state[name] = value;
   }
 
 
@@ -63,18 +88,19 @@ export default function OwnerComponent(props) {
   let elements = document.getElementsByTagName("input");
 
   const viewLayout = () => {
+    console.log("local_state: ", local_state);
     return (
       <div className={classes.root} onLoad={manageInputTag}>
         <div className="container-fluid raised-box raised-box-theme">
-          <p>Name:    <input type="text" className="form-control short-text-input-60" name="name" defaultValue="Ismail" disabled  onChange={handleChange} /></p>
-          <p>Gender:  <input type="text" className="form-control short-text-input-60" name="gender" value="test" disabled onChange={handleChange} /></p>
-          <p>DOB:     <input type="text" className="form-control short-text-input-60" name="dob" value="test" disabled onChange={handleChange} /></p>
-          <p>Address: <input type="text" className="form-control short-text-input-80" name="address" value="test" disabled onChange={handleChange} /></p>
-          <p>Nin:    <input type="text" className="form-control short-text-input-60" name="nin" defaultValue="Ismail" disabled  onChange={handleChange} /></p>
-          <p>Phone1:  <input type="text" className="form-control short-text-input-60" name="phone1" value="test" disabled onChange={handleChange} /></p>
-          <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" value="test" disabled onChange={handleChange} /></p>
-          <p>Email:  <input type="text" className="form-control short-text-input-60" name="email" value="test" disabled onChange={handleChange} /></p>
-          <p>Wallet Address: <input type="text" className="form-control short-text-input-80" name="walletAddress" value="test" disabled onChange={handleChange} /></p>
+          <p>Name:    <input type="text" className="form-control short-text-input-60" name="name" defaultValue={local_state.name} disabled  onChange={handleChange} /></p>
+          <p>Gender:  <input type="text" className="form-control short-text-input-60" name="gender" value={local_state.gender} disabled onChange={handleChange} /></p>
+          <p>DOB:     <input type="text" className="form-control short-text-input-60" name="dob" value={local_state.dob} disabled onChange={handleChange} /></p>
+          <p>Address: <input type="text" className="form-control short-text-input-80" name="address" value={local_state.address} disabled onChange={handleChange} /></p>
+          <p>Nin:     <input type="text" className="form-control short-text-input-60" name="nin" defaultValue={local_state.nin} disabled  onChange={handleChange} /></p>
+          <p>Phone1:  <input type="text" className="form-control short-text-input-60" name="phone1" value={local_state.phone1} disabled onChange={handleChange} /></p>
+          <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" value={local_state.phone2} disabled onChange={handleChange} /></p>
+          <p>Email:   <input type="text" className="form-control short-text-input-60" name="email" value={local_state.email} disabled onChange={handleChange} /></p>
+          <p>Wallet Address: <input type="text" className="form-control short-text-input-80" name="walletAddress" value={local_state.walletAddress} disabled onChange={handleChange} /></p>
               
           </div>
       </div>
@@ -85,16 +111,16 @@ export default function OwnerComponent(props) {
     return (
       <div className={classes.root} onLoad={manageInputTag}>
         <div className="container-fluid raised-box raised-box-theme">
-          <p>Name:    <input type="text" className="form-control short-text-input-60" name="name" defaultValue="Ismail"  onChange={handleChange} /></p>
-          <p>Gender:  <input type="text" className="form-control short-text-input-40" name="gender" defaultValue="test" onChange={handleChange} /> DOB:     
-            <input type="text" className="form-control short-text-input-40" name="dob" defaultValue="test" onChange={handleChange} /> </p>
+          <p>Name:    <input type="text" className="form-control short-text-input-60" name="name" defaultValue={local_state.name} onChange={handleChange} /></p>
+          <p>Gender:  <input type="text" className="form-control short-text-input-40" name="gender" defaultValue={local_state.gender} onChange={handleChange} /> DOB:     
+            <input type="text" className="form-control short-text-input-40" name="dob" defaultValue={local_state.dob} onChange={handleChange} /> </p>
           <p></p>
-          <p>Address: <input type="text" className="form-control short-text-input-60" name="address" defaultValue="test" onChange={handleChange} /></p>
-          <p>Nin: <input type="text" className="form-control short-text-input-80" name="nin" defaultValue="test" onChange={handleChange} /></p>
-          <p>Phone1:  <input type="text" className="form-control short-text-input-60" name="phone1" defaultValue="test" onChange={handleChange} /></p>
-          <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" defaultValue="test" onChange={handleChange} /></p>
-          <p>Email:  <input type="text" className="form-control short-text-input-60" name="email" defaultValue="test" onChange={handleChange} /></p>
-          <p>Wallet Address: <input type="text" className="form-control short-text-input-80" name="walletAddress" defaultValue="test" onChange={handleChange} /></p>
+          <p>Address: <input type="text" className="form-control short-text-input-60" name="address" defaultValue={local_state.address} onChange={handleChange} /></p>
+          <p>Nin: <input type="text" className="form-control short-text-input-80" name="nin" defaultValue={local_state.nin} onChange={handleChange} /></p>
+          <p>Phone1:  <input type="text" className="form-control short-text-input-60" name="phone1" defaultValue={local_state.phone1} onChange={handleChange} /></p>
+          <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" defaultValue={local_state.phone2} onChange={handleChange} /></p>
+          <p>Email:  <input type="text" className="form-control short-text-input-60" name="email" defaultValue={local_state.email} onChange={handleChange} /></p>
+          <p>Wallet Address: <input type="text" className="form-control short-text-input-80" name="walletAddress" defaultValue={local_state.walletAddress} onChange={handleChange} /></p>
               
           </div>
       </div>
@@ -105,15 +131,15 @@ export default function OwnerComponent(props) {
     return (
       <div className={classes.root} onLoad={manageInputTag}>
         <div className="container-fluid raised-box raised-box-theme">
-          <p>Name:    <input type="text" className="form-control short-text-input-60" name="name" placeholder="Ismail"  onChange={handleChange} /></p>
-          <p>Gender:  <input type="text" className="form-control short-text-input-60" name="gender" placeholder="test" onChange={handleChange} /></p>
-          <p>DOB:     <input type="date" className="form-control short-text-input-60" name="dob" placeholder="test" onChange={handleChange} /></p>
-          <p>Address: <input type="text" className="form-control short-text-input-80" name="address" placeholder="test" onChange={handleChange} /></p>
-          <p>Nin: <input type="text" className="form-control short-text-input-80" name="nin" placeholder="test" onChange={handleChange} /></p>
-          <p>Phone1:  <input type="text" className="form-control short-text-input-60" name="phone1" placeholder="test" onChange={handleChange} /></p>
-          <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" placeholder="test" onChange={handleChange} /></p>
-          <p>Email:  <input type="text" className="form-control short-text-input-60" name="email" placeholder="test" onChange={handleChange} /></p>
-          <p>Password: <input type="text" className="form-control short-text-input-80" name="password" placeholder="test" onChange={handleChange} /></p>
+          <p>Name:    <input type="text" className="form-control short-text-input-60" name="name" placeholder=""  onChange={handleChange} /></p>
+          <p>Gender:  <input type="text" className="form-control short-text-input-60" name="gender" placeholder="" onChange={handleChange} /></p>
+          <p>DOB:     <input type="date" className="form-control short-text-input-60" name="dob" placeholder="" onChange={handleChange} /></p>
+          <p>Address: <input type="text" className="form-control short-text-input-80" name="address" placeholder="" onChange={handleChange} /></p>
+          <p>Nin: <input type="text" className="form-control short-text-input-80" name="nin" placeholder="" onChange={handleChange} /></p>
+          <p>Phone1:  <input type="text" className="form-control short-text-input-60" name="phone1" placeholder="" onChange={handleChange} /></p>
+          <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" placeholder="" onChange={handleChange} /></p>
+          <p>Email:  <input type="text" className="form-control short-text-input-60" name="email" placeholder="" onChange={handleChange} /></p>
+          <p>Password: <input type="text" className="form-control short-text-input-80" name="password" placeholder="" onChange={handleChange} /></p>
               
           </div>
       </div>

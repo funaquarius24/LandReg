@@ -98,9 +98,7 @@ class Dashboard extends React.Component {
                                     <div className="p-2 m-2 bd-highlight">Email: {user.email}</div>
                                     <div className="p-2 m-2 bd-highlight">Address: {user.wAddress}</div>
                                 </div>
-                                <div>
-                                    No document selected. Please search below.
-                                </div>
+                                
                                 <div className="row">
                                     <div className="col-lg-12 grid-margin stretch-card">
                                         <div className="card">

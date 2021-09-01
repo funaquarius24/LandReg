@@ -2,13 +2,14 @@
 import { authHeader } from '../_helpers';
 const apiUrl = 'http://localhost:4200'
 
-export const searchService = {
-    land_search_id,
-    land_search_user
+export const landService = {
+    land_info,
+    land_details,
+    get_land_owner_info
 };
 
-async function land_search_id(data){
-    data.search_with_id = true;
+// responsible for sending records
+async function land_info(data){
     const requestOptions = {
         method: 'POST',
         headers: authHeader(),
@@ -22,6 +23,45 @@ async function land_search_id(data){
     const search_result = await handleResponse(response);
     // store user details and jwt token in local storage to keep user logged in between page refreshes
     console.log("search_result", search_result);
+    
+    return search_result;
+}
+
+// responsible for sending records
+async function land_details(data){
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(data)
+    };
+
+    // console.log("requestOptions: ", requestOptions.body);
+
+    const response = await fetch(`${apiUrl}/blockchain/searchLand`, requestOptions);
+    // console.log(response);
+    const search_result = await handleResponse(response);
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    console.log("search_result", search_result);
+    return search_result;
+}
+
+// responsible for sending records
+async function get_land_owner_info(address_data){
+    var data = {}
+    data['wAddress'] = address_data;
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(data)
+    };
+
+    // console.log("requestOptions: ", requestOptions.body);
+
+    const response = await fetch(`${apiUrl}/blockchain/ownerInfo`, requestOptions);
+    // console.log(response);
+    const land_owner_info_result = await handleResponse(response);
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    console.log("land_owner_info_result", land_owner_info_result);
     // if(Object.keys(search_result).length > 0){
     //     var search_result_keys = Object.keys(search_result);
     //     search_result_keys.forEach((element, index, array) => {
@@ -30,23 +70,9 @@ async function land_search_id(data){
     //       // properRows = createData(element.)
     //     });
     //   }
-    return search_result;
+    return land_owner_info_result;
 }
 
-async function land_search_user(data){
-    data.search_with_id = false;
-    const requestOptions = {
-        method: 'POST',
-        headers: authHeader(),
-        body: JSON.stringify(data)
-    };
-
-    const response = await fetch(`${apiUrl}/blockchain/searchLand`, requestOptions);
-    console.log(response);
-    const search_result = await handleResponse(response);
-    // store user details and jwt token in local storage to keep user logged in between page refreshes
-    return search_result;
-}
 
 function logout() {
     // remove user from local storage to log user out

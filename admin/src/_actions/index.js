@@ -1,3 +1,3 @@
 export * from './alert.actions';
 export * from './user.actions';
-export * from './landOwner.action';
+export * from './land.actions';

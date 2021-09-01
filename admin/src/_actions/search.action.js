@@ -52,3 +52,4 @@ function land_search_user(data) {
     function success(search_result) { return { type: searchConstants.SEARCH_SUCCESS, search_result } }
     function failure(error) { return { type: searchConstants.SEARCH_FAILURE, error } }
 }
+

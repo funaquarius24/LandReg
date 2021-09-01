@@ -62,6 +62,7 @@ describe('Users function endpoint', () => {
         expect(res.statusCode).toEqual(200)
     } )
 
+
     it('should fail to create a new user -- assume already exists', async () => {
         const res = await request(app)
           .post('/users')

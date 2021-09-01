@@ -134,6 +134,21 @@ exports.editLandDocuments = (data) => {
   
 }
 
+exports.ownerInfo = (data) => {
+  console.log("address: ", data.wAddress);
+
+  return blockchain.myContract.methods.ownerInfo(data.wAddress + "")
+    .call({from: data.senderAddress, gas: 2000000})
+    .then(result => {
+      return result;
+    })
+    .catch(error => {
+      console.log("Error owner info: ", error);
+      throw error;
+    })
+
+}
+
 exports.searchLand = (data) => {
   console.log("data: ", data);
   const assetsInfo = {};

@@ -2,6 +2,7 @@ const request = require('supertest')
 // const app = require('../app')
 const app =  'http://localhost:4200'
 var token = ''
+var wAddress = ""
 
 describe('This is meant to search on the blockchain.', () => {
     jest.setTimeout(8000);
@@ -77,6 +78,22 @@ describe('This is meant to search on the blockchain.', () => {
             search_with_id: false
         })
 
+        expect(res.statusCode).toEqual(200);
+        wAddress = res.body['currentOwner'];
+        console.log('body: ', res.body);
+        console.log("wAddress: ", wAddress);
+    } )
+
+    it('should get owner data', async () => {
+        const res = await request(app)
+        .post('/blockchain/ownerInfo')
+        .set('Authorization', 'Bearer ' + token)
+        .send({
+            "wAddress": '0x3aD007E3F1f1ADf71F94Ca227fEF86C1f3776970'
+        })
+  
+        console.log(res.body);
+  
         expect(res.statusCode).toEqual(200)
     } )
 

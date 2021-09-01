@@ -23,7 +23,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { connect } from 'react-redux';
 import { searchActions } from '../_actions/search.action';
-import {  userActions } from '../_actions';
+import {  landActions, userActions } from '../_actions';
 
 import {useDispatch, useSelector} from "react-redux"; 
 
@@ -229,6 +229,8 @@ export default function SearchTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const dispatch = useDispatch();
+
   const search = useSelector(state => state.search);
   var search_result = {};
 
@@ -278,23 +280,6 @@ export default function SearchTable(props) {
   };
 
   const handleClick = (event, name) => {
-    // const selectedIndex = selected.indexOf(name);
-    // let newSelected = "";
-
-    // if (selectedIndex === -1) {
-    //   newSelected = newSelected.concat(selected, name);
-    // } else if (selectedIndex === 0) {
-    //   newSelected = newSelected.concat(selected.slice(1));
-    // } else if (selectedIndex === selected.length - 1) {
-    //   newSelected = newSelected.concat(selected.slice(0, -1));
-    // } else if (selectedIndex > 0) {
-    //   newSelected = newSelected.concat(
-    //     selected.slice(0, selectedIndex),
-    //     selected.slice(selectedIndex + 1),
-    //   );
-    // }
-
-    // setSelected(newSelected);
     setSelected(name);
   };
 
@@ -303,21 +288,17 @@ export default function SearchTable(props) {
     // let newSelected = "";
     console.log("worked!");
 
-    // if (selectedIndex === -1) {
-    //   newSelected = newSelected.concat(selected, name);
-    // } else if (selectedIndex === 0) {
-    //   newSelected = newSelected.concat(selected.slice(1));
-    // } else if (selectedIndex === selected.length - 1) {
-    //   newSelected = newSelected.concat(selected.slice(0, -1));
-    // } else if (selectedIndex > 0) {
-    //   newSelected = newSelected.concat(
-    //     selected.slice(0, selectedIndex),
-    //     selected.slice(selectedIndex + 1),
-    //   );
-    // }
-
-    // setSelected(newSelected);
     setSelected(name);
+
+    const land_id = selected;
+
+    if (land_id) {
+      const data = {'land_info': search_result[land_id], 'land_id': land_id}
+      dispatch(landActions.land_id_selected(data));
+      // console.log("land_info owner: ", search_result[currentOwner]);
+    }
+
+
   };
 
   const handleChangePage = (event, newPage) => {
@@ -414,11 +395,9 @@ export default function SearchTable(props) {
 }
 
 function mapStateToProps(state) {
-  const { authentication, search } = state;
-  const { user } = authentication;
+  const { landInfo } = state;
   return {
-      user,
-      search
+      landInfo
   };
 }
 

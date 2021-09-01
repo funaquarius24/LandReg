@@ -121,7 +121,7 @@ contract LandReg{
         return true;
     }
 
-    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) { 
         if (_i == 0) {
             return "0";
         }
@@ -238,7 +238,7 @@ contract LandReg{
         string memory NIN,
         string memory email
     ) {
-        require(compareStrings(owners[wAddress].email, ""), "This owner does not exist.");
+        require(!compareStrings(owners[wAddress].email, ""), "This owner does not exist.");
         ownerDetails memory tmpOwner = owners[wAddress];
         name = tmpOwner.name;
         gender = tmpOwner.gender;
@@ -248,6 +248,28 @@ contract LandReg{
         phone2 = tmpOwner.phone2;
         NIN = tmpOwner.NIN;
         email = tmpOwner.email;
+
+    }
+
+    function landDocumentsInfo(
+        string memory id
+    ) public returns (
+        string memory cofo,
+        uint cofoDate,
+        string memory rofoHash,
+        uint  rofoDate,
+        bool isCertified
+        ) {
+        require(lands[id].plotSize != 0 && lands[id].plotNumber != 0, "No land with this ID exists.");
+
+        landDetails memory lands_local = lands[id];
+
+        // id = id;
+        cofo = lands_local.cofo;
+        cofoDate = lands_local.cofoDate;
+        rofoHash = lands_local.rofoHash;
+        rofoDate = lands_local.rofoDate;
+        isCertified = lands_local.isCertified;
 
     }
 
