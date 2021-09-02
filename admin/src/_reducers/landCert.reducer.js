@@ -2,13 +2,13 @@ import { landConstants } from '../_constants';
 
 const initialState = {};
 
-export function landData(state = initialState, action) {
+export function landCert(state = initialState, action) {
   switch (action.type) {
-    case landConstants.LAND_SAVE_SUCCESS:
+    case landConstants.LAND_CERT_SUCCESS:
       return {
-        items: action.land_data_result
+        items: action.land_cert_info_result
       };
-    case landConstants.LAND_SAVE_FAILURE:
+    case landConstants.LAND_CERT_FAILURE:
       return {
         error: action.error
       }

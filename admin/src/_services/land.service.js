@@ -5,7 +5,8 @@ const apiUrl = 'http://localhost:4200'
 export const landService = {
     land_info,
     land_details,
-    get_land_owner_info
+    get_land_owner_info,
+    get_land_cert_info
 };
 
 // responsible for sending records
@@ -45,7 +46,6 @@ async function land_details(data){
     return search_result;
 }
 
-// responsible for sending records
 async function get_land_owner_info(address_data){
     var data = {}
     data['wAddress'] = address_data;
@@ -71,6 +71,23 @@ async function get_land_owner_info(address_data){
     //     });
     //   }
     return land_owner_info_result;
+}
+
+async function get_land_cert_info(land_id){
+    var data = {}
+    data['land_id'] = land_id;
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(data)
+    };
+
+
+    const response = await fetch(`${apiUrl}/blockchain/documentsInfo`, requestOptions);
+    // console.log(response);
+    const land_cert_info_result = await handleResponse(response);
+    console.log("land_cert_info_result", land_cert_info_result);
+    return land_cert_info_result;
 }
 
 

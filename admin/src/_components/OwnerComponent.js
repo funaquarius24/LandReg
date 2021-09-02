@@ -34,8 +34,8 @@ export default function OwnerComponent(props) {
 
   const dispatch = useDispatch();
   const landOwnerInfo = useSelector(state => state.landOwner);
-
-  console.log("landOwnerInfo: ", landOwnerInfo);
+  
+  // console.log("landOwnerInfo: ", landOwnerInfo);
 
   if(landOwnerInfo.items && Object.keys(landOwnerInfo).length > 0){
     console.log("landOwnerInfo items: ", landOwnerInfo.items);

@@ -102,7 +102,9 @@ describe('Users function endpoint', () => {
             cofoDate: parseInt(88923),
             rofoHash: "0903245534",
             rofoDate: parseInt(33285),
-            stateOfAdmin: "Lagos"
+            stateOfAdmin: "Lagos",
+            certNumber: "AG748437438"
+
         })
 
 

@@ -18,6 +18,7 @@ contract LandReg{
         uint cofoDate;
         string rofoHash;
         uint rofoDate;
+        string certNumber;
         // Buy and sell
         uint marketValue;
         bool isAvailable;
@@ -149,6 +150,7 @@ contract LandReg{
         uint cofoDate,
         string memory rofoHash,
         uint  rofoDate,
+        string memory certNumber,
         string memory stateOfAdmin
     ) public returns (bool) {
         require(adminStates[stateOfAdmin].adminAddress == msg.sender || owner == msg.sender, "Only admins are allowed to perform this operation.");
@@ -158,6 +160,7 @@ contract LandReg{
         lands[id].cofoDate = cofoDate;
         lands[id].rofoHash = rofoHash;
         lands[id].rofoDate = rofoDate;
+        lands[id].certNumber = certNumber;
 
         if(!(compareStrings(cofo, "") && compareStrings(rofoHash, ""))){
             lands[id].isCertified = true;
@@ -253,11 +256,12 @@ contract LandReg{
 
     function landDocumentsInfo(
         string memory id
-    ) public returns (
+    ) public view returns (
         string memory cofo,
         uint cofoDate,
         string memory rofoHash,
         uint  rofoDate,
+        string memory certNumber,
         bool isCertified
         ) {
         require(lands[id].plotSize != 0 && lands[id].plotNumber != 0, "No land with this ID exists.");
@@ -269,6 +273,7 @@ contract LandReg{
         cofoDate = lands_local.cofoDate;
         rofoHash = lands_local.rofoHash;
         rofoDate = lands_local.rofoDate;
+        certNumber = lands_local.certNumber;
         isCertified = lands_local.isCertified;
 
     }

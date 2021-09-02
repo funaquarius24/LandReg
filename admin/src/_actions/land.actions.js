@@ -4,8 +4,6 @@ import { alertActions } from '.';
 import { history } from '../_helpers';
 
 export const landActions = {
-    land_details,
-    land_info,
     land_id_selected
 };
 
@@ -63,19 +61,19 @@ function land_details(data) {
 }
 
 function land_id_selected(data) {
-
-
+    // console.log('land_id_selected: ', data);
 
     return dispatch => {
-        dispatch(save(data));
-        // console.log('land curr owner: ', data['land_info']['currentOwner']);
+        const land_data_result = data;
+        dispatch(save(land_data_result));
+        // console.log('land curr owner: ',land_data_result);
 
         landService.get_land_owner_info(data['land_info']['currentOwner'])
             .then(
                 land_owner_info_result => {
                     land_owner_info_result['wAddress'] = data['land_info']['currentOwner'];
-                    dispatch(success(land_owner_info_result));
-                    history.push('/details');
+                    dispatch(land_owner_success(land_owner_info_result));
+                    // history.push('/details');
                 },
                 error => {
                     if(typeof error === 'string' || error instanceof String){
@@ -89,10 +87,35 @@ function land_id_selected(data) {
                     
                 }
             )
+
+            landService.get_land_cert_info(data['land_id'])
+            .then(
+                land_cert_info_result => {
+                    // land_owner_info_result['wAddress'] = data['land_info']['currentOwner'];
+                    dispatch(land_cert_success(land_cert_info_result));
+                    // history.push('/details');
+                },
+                error => {
+                    if(typeof error === 'string' || error instanceof String){
+                        // console.log("error: ", error);
+                        dispatch(failure(error));
+                        dispatch(alertActions.error(error));
+                    }else{
+                        dispatch(failure(error.name + error.message));
+                        dispatch(alertActions.error(error.message));
+                    }
+                    
+                }
+            )
+
+            history.push('/details');
+
+        
     }
 
-    function save(data) { return { type: landConstants.LAND_SAVE_SUCCESS, data } }
-    function success(land_owner_result) { return { type: landConstants.LAND_OWNER_SUCCESS, land_owner_result } }
+    function save(land_data_result) { return { type: landConstants.LAND_SAVE_SUCCESS, land_data_result } }
+    function land_owner_success(land_owner_result) { return { type: landConstants.LAND_OWNER_SUCCESS, land_owner_result } }
+    function land_cert_success(land_cert_info_result) { return { type: landConstants.LAND_CERT_SUCCESS, land_cert_info_result } }
     function failure(error) { return { type: landConstants.LAND_OWNER_FAILURE, error } }
 }
 

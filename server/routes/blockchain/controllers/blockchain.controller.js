@@ -203,6 +203,45 @@ exports.ownerInfo = (req, res, next) => {
     
 }
 
+exports.documentsInfo = (req, res, next) => {
+    if(!req.body){
+        console.log("No body");
+        res.status(400).send("No Body");
+        throw new Error("No body.")
+    }
+    var data = req.body;
+    data.senderAddress = req.jwt.wAddress;
+    return blockchainModel.landDocumentsInfo(data)
+    .then((result) => {
+        
+        if (req.isNext){
+
+            res.status(200);
+            return result; 
+        }
+        else {
+            // res.result = result;
+            console.log("result: ", result);
+            res.status(200).send(result);
+        }
+               
+    })
+    .catch((error) => {
+        if (req.isNext){
+            res.status(404);
+            throw error;
+        }
+        else {
+            var err = error + "";
+            err = err.split("\n"); 
+            console.log("err: ", err);
+            err = "error for blockchain documentsInfo: " + err;
+            res.status(404).send(err);
+        }
+    })
+    
+}
+
 
 exports.searchLand = (req, res, next) => {
     if(!req.body){

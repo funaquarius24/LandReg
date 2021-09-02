@@ -25,6 +25,11 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         BlockchainController.ownerInfo
     ])
+    app.post('/blockchain/documentsInfo', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        BlockchainController.documentsInfo
+    ])
     app.post('/blockchain/addLand', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),

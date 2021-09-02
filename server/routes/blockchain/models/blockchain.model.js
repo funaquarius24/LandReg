@@ -93,6 +93,7 @@ exports.editLandDocuments = (data) => {
       data.cofoDate,
       data.rofoHash,
       data.rofoDate,
+      data.certNumber,
       data.stateOfAdmin
     ).send({from: data.senderAddress, gas: 2000000})
     .then(function(receipt){
@@ -144,6 +145,21 @@ exports.ownerInfo = (data) => {
     })
     .catch(error => {
       console.log("Error owner info: ", error);
+      throw error;
+    })
+
+}
+
+exports.landDocumentsInfo = (data) => {
+  console.log("address: ", data.land_id);
+
+  return blockchain.myContract.methods.landDocumentsInfo(data.land_id + "")
+    .call({from: data.senderAddress, gas: 2000000})
+    .then(result => {
+      return result;
+    })
+    .catch(error => {
+      console.log("Error document info: ", error);
       throw error;
     })
 
