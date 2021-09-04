@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LandComponent(props) {
   const classes = useStyles();
-  const { view, create } = props;  
+  const { view, create, landCompState } = props;  
 
   const local_state = {
     state: "",
@@ -47,6 +47,9 @@ export default function LandComponent(props) {
     local_state.WalletAddress = landInfo.items.land_info.currentOwner;
 
     console.log("local_state_after mod: ", local_state)
+    if(!view){
+      Object.assign(landCompState, local_state);
+    }
   }
 
 
@@ -66,6 +69,7 @@ export default function LandComponent(props) {
     const { name, value } = e.target;
     // setState({ [name]: value });
     local_state[name] = value;
+    landCompState[name] = value;
   }
 
   manageInputTag();

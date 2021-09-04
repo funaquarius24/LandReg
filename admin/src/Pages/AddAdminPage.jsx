@@ -9,14 +9,59 @@ class AddAdminPage extends React.Component {
     constructor(props) {
         super(props);
 
+        const nig_states_array = [
+            "Abia",
+            "Adamawa",
+            "Akwa Ibom",
+            "Anambra",
+            "Bauchi",
+            "Bayelsa",
+            "Benue",
+            "Borno",
+            "Cross River",
+            "Delta",
+            "Ebonyi",
+            "Edo",
+            "Ekiti",
+            "Enugu",
+            "FCT - Abuja",
+            "Gombe",
+            "Imo",
+            "Jigawa",
+            "Kaduna",
+            "Kano",
+            "Katsina",
+            "Kebbi",
+            "Kogi",
+            "Kwara",
+            "Lagos",
+            "Nasarawa",
+            "Niger",
+            "Ogun",
+            "Ondo",
+            "Osun",
+            "Oyo",
+            "Plateau",
+            "Rivers",
+            "Sokoto",
+            "Taraba",
+            "Yobe",
+            "Zamfara"
+          ]
+
         this.state = {
-            username: '',
+            name: '',
+            email: '',
             password: '',
+            phone: '',
+            state: '',
+            district: '',
             submitted: false
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDropdownChange = this.handleDropdownChange.bind(this);
     }
 
     handleChange(e) {
@@ -28,11 +73,19 @@ class AddAdminPage extends React.Component {
         e.preventDefault();
 
         this.setState({ submitted: true });
-        const { username, password } = this.state;
+        const { email, state } = this.state;
         const { dispatch } = this.props;
-        if (username && password) {
-            dispatch(userActions.login(username, password));
+        if (email && state) {
+            dispatch(userActions.addAdmin(this.state));
         }
+    }
+
+    handleDropdownChange(e) {
+        const { name, value } = e.target;
+        // console.log('name: ', name, 'value: ', value);
+        this.setState({ [name]: value });
+        // console.log("state: ", this.state);
+
     }
 
     
@@ -40,7 +93,45 @@ class AddAdminPage extends React.Component {
     render() {
         const { loggingIn } = this.props;
         const { username, password, submitted } = this.state;
-
+        const nig_states_array = [
+            "Abia",
+            "Adamawa",
+            "Akwa Ibom",
+            "Anambra",
+            "Bauchi",
+            "Bayelsa",
+            "Benue",
+            "Borno",
+            "Cross River",
+            "Delta",
+            "Ebonyi",
+            "Edo",
+            "Ekiti",
+            "Enugu",
+            "FCT - Abuja",
+            "Gombe",
+            "Imo",
+            "Jigawa",
+            "Kaduna",
+            "Kano",
+            "Katsina",
+            "Kebbi",
+            "Kogi",
+            "Kwara",
+            "Lagos",
+            "Nasarawa",
+            "Niger",
+            "Ogun",
+            "Ondo",
+            "Osun",
+            "Oyo",
+            "Plateau",
+            "Rivers",
+            "Sokoto",
+            "Taraba",
+            "Yobe",
+            "Zamfara"
+          ]
         return (
            
             <div className="container-scroller">
@@ -60,37 +151,43 @@ class AddAdminPage extends React.Component {
                                                     <div className="row">
                                                         <div className="col-md-6">
                                                             <div className="form-group">
-                                                                <input type="text" className="form-control" placeholder="First name" /> </div>
+                                                                <input type="text" className="form-control" name="name" placeholder="First name" onChange={this.handleChange} /> </div>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <div className="form-group">
-                                                                <input type="text" className="form-control" placeholder="Last name" /> </div>
+                                                                <input type="text" className="form-control" placeholder="Last name"  onChange={this.handleChange} /> </div>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <div className="form-group">
-                                                                <input type="email" className="form-control" placeholder="Email" /> </div>
+                                                                <input type="email" className="form-control" name="email" placeholder="Email"  onChange={this.handleChange} /> </div>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <div className="form-group">
-                                                                <input type="text" className="form-control" placeholder="Phone number" /> </div>
+                                                                <input type="text" className="form-control" name="phone" placeholder="Phone number"  onChange={this.handleChange} /> 
+                                                            </div>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <div className="form-group">
-                                                                <input type="password" className="form-control" placeholder="Password" /> </div>
+                                                                <input type="password" className="form-control" name="password" placeholder="Password"  onChange={this.handleChange} /> 
+                                                            </div>
                                                         </div>
                                                         <div className="col-md-12">
-                                                            <select name="role" className="custom-select" id="exampleFormControlSelect1">
-                                                                <option>Select country</option>
-                                                                <option>India</option>
-                                                                <option>USA</option>
-                                                                <option>France</option>
-                                                                <option>China</option>
-                                                                <option>Japan</option>
+                                                            <select name="state" className="custom-select" id="exampleFormControlSelect" onChange={this.handleDropdownChange}>
+                                                                
+                                                                <option>Select State</option>{
+                                                                    nig_states_array.map( (x,y) => 
+                                                                    <option key={y}>{x}</option> )
+                                                                }
                                                             </select>
+                                                        </div>
+                                                        <div className="col-md-6 mt-3">
+                                                            <div className="form-group">
+                                                                <input type="text" className="form-control" name="district" placeholder="District"  onChange={this.handleChange} /> 
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div className="mt-3">
-                                                        <button className="btn btn-primary">Add</button>
+                                                        <button className="btn btn-primary" onClick={this.handleSubmit}>Add</button>
                                                     </div>
                                                 </form>
                                             </div>

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken'),
 const ADMIN_PERMISSION = 4096;
 
 exports.minimumPermissionLevelRequired = (required_permission_level) => {
+    console.log("minimumPermissionLevelRequired reached!!!");
     return (req, res, next) => {
         let user_permission_level = parseInt(req.jwt.permissionLevel);
         // console.log('min: ',  required_permission_level);

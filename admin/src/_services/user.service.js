@@ -5,7 +5,8 @@ const apiUrl = 'http://localhost:4200'
 export const userService = {
     login,
     logout,
-    getAll
+    getAll,
+    addAdmin
 };
 
 async function login(email, password) {
@@ -39,9 +40,28 @@ function getAll() {
     return fetch(`${apiUrl}/users`, requestOptions).then(handleResponse);
 }
 
+function addAdmin(data) {
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(data)
+    };
+
+    console.log("headers: ", requestOptions);
+
+    return fetch(`${apiUrl}/users/addAdmin`, requestOptions).then(handleResponse);
+}
+
 function handleResponse(response) {
     return response.text().then(text => {
-        const data = text && JSON.parse(text);
+        const data = {};
+        try { // statements to try
+            data = text && JSON.parse(text);
+          }
+        catch (e) {
+            data.message = text;
+        }
+        
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api

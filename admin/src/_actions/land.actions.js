@@ -3,8 +3,12 @@ import { landService } from '../_services';
 import { alertActions } from '.';
 import { history } from '../_helpers';
 
+import {useDispatch, useSelector} from "react-redux"; 
+
 export const landActions = {
-    land_id_selected
+    land_id_selected,
+    edit_details_submitted,
+    apply_details_submitted
 };
 
 function land_info(data) {
@@ -119,3 +123,21 @@ function land_id_selected(data) {
     function failure(error) { return { type: landConstants.LAND_OWNER_FAILURE, error } }
 }
 
+function edit_details_submitted(data) {
+    
+
+    return dispatch => {
+        console.log("Entered Edit dispatch");
+        console.log(data)
+    }
+
+}
+
+function apply_details_submitted(data) {
+
+    return dispatch => {
+        console.log("Entered apply dispatch");
+        console.log(data)
+    }
+    
+}

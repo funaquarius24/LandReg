@@ -3,14 +3,15 @@ import { authHeader } from '../_helpers';
 const apiUrl = 'http://localhost:4200'
 
 export const landService = {
-    land_info,
-    land_details,
+    edit_details,
+    apply_details,
     get_land_owner_info,
     get_land_cert_info
 };
 
+
 // responsible for sending records
-async function land_info(data){
+async function edit_details(data){
     const requestOptions = {
         method: 'POST',
         headers: authHeader(),
@@ -24,12 +25,10 @@ async function land_info(data){
     const search_result = await handleResponse(response);
     // store user details and jwt token in local storage to keep user logged in between page refreshes
     console.log("search_result", search_result);
-    
     return search_result;
 }
 
-// responsible for sending records
-async function land_details(data){
+async function apply_details(data){
     const requestOptions = {
         method: 'POST',
         headers: authHeader(),

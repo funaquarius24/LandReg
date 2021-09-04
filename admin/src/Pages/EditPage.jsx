@@ -8,10 +8,25 @@ import OwnerComponent from '../_components/OwnerComponent';
 import LandComponent from '../_components/LandComponent';
 import RoCoComponent from '../_components/RoCoComponent';
 
+import { landActions } from '../_actions/land.actions';
+
 class EditPage extends React.Component {
 
+  constructor(props){
+    super(props);
+  }
+
     render() {
-        const { loggingIn } = this.props;
+        const ownerCompState = {};
+        const landCompState = {};
+        const rocoCompState = {};
+
+        const handleSubmitClicked = () => {
+          const formState = {ownerCompState: ownerCompState, landCompState: landCompState, rocoCompState: rocoCompState}
+          this.props.dispatch(landActions.edit_details_submitted(formState));
+        }
+
+        
 
         return (
           <div className="container-scroller">
@@ -20,12 +35,12 @@ class EditPage extends React.Component {
               <div className="row">
                 <div className="col-md-2"></div>
                 <div className="col-md-4">
-                  <OwnerComponent view={false} />
+                  <OwnerComponent view={false} ownerCompState={ownerCompState} />
                   
                 </div>
                 <div className="col-md-4">
 
-                  <LandComponent view={false} />
+                  <LandComponent view={false} landCompState={landCompState}  />
                   
                 </div>
 
@@ -34,9 +49,9 @@ class EditPage extends React.Component {
               <div className="row">
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
-                  <RoCoComponent view={false} />
+                  <RoCoComponent view={false} rocoCompState={rocoCompState} />
                   <div className="d-flex justify-content-center edit-button-div mt-1">
-                    <button className="btn btn-primary submit-btn btn-block edit-button .align-self-center" type='submit' >Submit</button>
+                    <button className="btn btn-primary submit-btn btn-block edit-button .align-self-center" type='submit' onClick={handleSubmitClicked} >Submit</button>
                   </div>
                 </div>
                 

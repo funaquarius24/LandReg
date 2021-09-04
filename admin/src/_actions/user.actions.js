@@ -6,7 +6,8 @@ import { history } from '../_helpers';
 export const userActions = {
     login,
     logout,
-    getAll
+    getAll,
+    addAdmin
 };
 
 function login(username, password) {
@@ -35,6 +36,29 @@ function logout() {
     userService.logout();
     console.log("logging out");
     return { type: userConstants.LOGOUT };
+}
+
+function addAdmin(data) {
+    console.log("addAdmin: ", data)
+    if(!(data.name && data.email && data.phone && data.password && data.state && data.district)){
+        return dispatch => {
+            const compare_error = "Required fields are missing"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
+    return dispatch => {
+        userService.addAdmin(data)
+            .then(
+                returnedData => dispatch(alertActions.success("Admin Successfully Added")),
+                error => dispatch(alertActions.error(error))
+            )
+    }
+
+    function request(data) { return { type: userConstants.ADD_ADMIN_REQUEST, data } }
+    function success(data) { return { type: userConstants.ADD_ADMIN_SUCCESS, data } }
+    function failure(error) { return { type: userConstants.ADD_ADMIN_FAILURE, error } }
 }
 
 function getAll() {

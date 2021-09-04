@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OwnerComponent(props) {
   const classes = useStyles();
-  const { view, create } = props;  
+  const { view, create, ownerCompState } = props;  
 
   const local_state = {
     name: "",
@@ -48,6 +48,10 @@ export default function OwnerComponent(props) {
     local_state.phone2 = landOwnerInfo.items.phone2;
     local_state.email = landOwnerInfo.items.email;
     local_state.walletAddress = landOwnerInfo.items.wAddress;
+
+    if(!view){
+      Object.assign(ownerCompState, local_state);
+    }
 
     console.log("local_state_after mod: ", local_state)
   }
@@ -81,6 +85,7 @@ export default function OwnerComponent(props) {
     const { name, value } = e.target;
     // setlocal_state({ [name]: value });
     local_state[name] = value;
+    ownerCompState[name] = value;
   }
 
 

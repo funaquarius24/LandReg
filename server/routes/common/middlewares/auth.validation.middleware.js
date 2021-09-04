@@ -27,6 +27,7 @@ exports.validJWTNeeded = (req, res, next) => {
     if (req.headers['authorization']) {
         try {
             let authorization = req.headers['authorization'].split(' ');
+            console.log("authorization: ", authorization);
             if (authorization[0] !== 'Bearer') {
                 return res.status(401).send();
             } else {

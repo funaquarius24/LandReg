@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import "./components.css"
 import { useState } from 'react';
+import { create } from 'ipfs-http-client'
 
 import {useDispatch, useSelector} from "react-redux"; 
 
@@ -14,9 +15,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OwnerComponent(props) {
   const classes = useStyles();
-  const { view, create } = props; 
+  const { view, create_view, rocoCompState } = props; 
   const [ file, setFile ] = useState("");
   const [ imagePreviewUrl, setImagePreviewUrl ] = useState("");
+  // const { rocoCompState } = props;
 
   const local_state = {
     roStat: "",
@@ -29,6 +31,9 @@ export default function OwnerComponent(props) {
     
   }
 
+  // const client = create('https://ipfs.infura.io:5001/api/v0')
+  const client = create();
+
   const dispatch = useDispatch();
   const landCertInfo = useSelector(state => state.landCert);
 
@@ -38,9 +43,14 @@ export default function OwnerComponent(props) {
     local_state.roDate = landCertInfo.items.rofoDate;
     local_state.coStat = landCertInfo.items.cofo;
     local_state.coDate = landCertInfo.items.cofoDate;
-    local_state.coForm = landCertInfo.items.coForm;
-    local_state.coNature = landCertInfo.items.coNature;
+    local_state.coForm = landCertInfo.items.coForm ? landCertInfo.items.coForm : "";
+    local_state.coNature = landCertInfo.items.coNature ? landCertInfo.items.coNature : "";
     local_state.certno = landCertInfo.items.certNumber;
+
+    if(!view){
+      Object.assign(rocoCompState, local_state);
+    }
+    
   }
 
   const handleSubmit = (e) => {
@@ -89,6 +99,7 @@ export default function OwnerComponent(props) {
     const { name, value } = e.target;
     // setState({ [name]: value });
     local_state[name] = value;
+    rocoCompState[name] = value;
   }
 
 
@@ -246,7 +257,7 @@ export default function OwnerComponent(props) {
 
 
   return (
-    create? createLayout() : view ? viewLayout() : editLayout()
+    create_view? createLayout() : view ? viewLayout() : editLayout()
     );
 }
 

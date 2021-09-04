@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Router, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -25,11 +25,20 @@ class App extends React.Component {
         });
     }
 
+    componentDidUpdate(prev) {  
+        if(this.props.alert.message !== prev.alert.message )  {
+            setTimeout(() => {
+                this.props.dispatch(alertActions.clear());
+            }, 5000);
+        }
+        
+    }
+
     render() {
         const { alert } = this.props;
-        const { loggedIn } = this.props;
         console.log("alert: ", alert);
         console.log(localStorage.getItem('user'));
+          
         return (
             <div className='App-background'>
                 
