@@ -23,6 +23,7 @@ class EditPage extends React.Component {
 
         const handleSubmitClicked = () => {
           const formState = {ownerCompState: ownerCompState, landCompState: landCompState, rocoCompState: rocoCompState}
+          console.log("edit_page form state: ", formState);
           this.props.dispatch(landActions.edit_details_submitted(formState));
         }
 

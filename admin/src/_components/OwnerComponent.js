@@ -38,7 +38,7 @@ export default function OwnerComponent(props) {
   // console.log("landOwnerInfo: ", landOwnerInfo);
 
   if(landOwnerInfo.items && Object.keys(landOwnerInfo).length > 0){
-    console.log("landOwnerInfo items: ", landOwnerInfo.items);
+    // console.log("landOwnerInfo items: ", landOwnerInfo.items);
     local_state.name = landOwnerInfo.items.name;
     local_state.gender = landOwnerInfo.items.gender;
     local_state.dob = landOwnerInfo.items.dob;
@@ -53,7 +53,7 @@ export default function OwnerComponent(props) {
       Object.assign(ownerCompState, local_state);
     }
 
-    console.log("local_state_after mod: ", local_state)
+    // console.log("local_state_after mod: ", local_state)
   }
 
 
@@ -61,23 +61,23 @@ export default function OwnerComponent(props) {
       
     let elements = document.getElementsByTagName("input");
     
-    console.log("view: ", view); 
+    // console.log("view: ", view); 
 
-    console.log("element: ", elements[0]);
+    // console.log("element: ", elements[0]);
     return view ? disableInputs(elements) : enableInputs(elements);;
   }
 
   const disableInputs = (elements) => {
     [...elements].forEach(element => {
       element.setAttribute("diasbled", true);
-      console.log("element: ", elements);
+      // console.log("element: ", elements);
     });
   }
 
   const enableInputs = (elements) => {
     [...elements].forEach(element => {
       element.removeAttribute("diasbled")
-      console.log("element: ", elements);
+      // console.log("element: ", elements);
     });
   }
 

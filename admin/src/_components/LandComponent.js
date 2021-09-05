@@ -50,6 +50,8 @@ export default function LandComponent(props) {
     if(!view){
       Object.assign(landCompState, local_state);
     }
+
+    // console.log("landCompState inside comp: ", landCompState);
   }
 
 

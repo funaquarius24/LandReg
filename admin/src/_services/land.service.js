@@ -6,7 +6,9 @@ export const landService = {
     edit_details,
     apply_details,
     get_land_owner_info,
-    get_land_cert_info
+    get_land_cert_info,
+    create_owner,
+    create_land
 };
 
 
@@ -20,12 +22,48 @@ async function edit_details(data){
 
     // console.log("requestOptions: ", requestOptions.body);
 
-    const response = await fetch(`${apiUrl}/blockchain/searchLand`, requestOptions);
+    const response = await fetch(`${apiUrl}/blockchain/editLandDocuments`, requestOptions);
     // console.log(response);
-    const search_result = await handleResponse(response);
+    const edit_details_result = await handleResponse(response);
     // store user details and jwt token in local storage to keep user logged in between page refreshes
-    console.log("search_result", search_result);
-    return search_result;
+    // console.log("search_result", search_result);
+    return edit_details_result;
+}
+
+// responsible for sending records
+async function create_owner(data){
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(data)
+    };
+
+    // console.log("requestOptions: ", requestOptions.body);
+
+    const response = await fetch(`${apiUrl}/users/addOwner`, requestOptions);
+    // console.log(response);
+    const create_owner_result = await handleResponse(response);
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    // console.log("search_result", search_result);
+    return create_owner_result;
+}
+
+// responsible for sending records
+async function create_land(data){
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(data)
+    };
+
+    // console.log("requestOptions: ", requestOptions.body);
+
+    const response = await fetch(`${apiUrl}/blockchain/addLand`, requestOptions);
+    // console.log(response);
+    const create_land_result = await handleResponse(response);
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    // console.log("search_result", search_result);
+    return create_land_result;
 }
 
 async function apply_details(data){
@@ -97,8 +135,10 @@ function logout() {
 }
 
 function handleResponse(response) {
+    console.log("response: ", response);
     return response.text().then(text => {
         const data = text && JSON.parse(text);
+        
         if (!response.ok) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
@@ -117,6 +157,9 @@ function handleResponse(response) {
     .catch(error => {
         if (response.status == "404"){
             throw "404 error.";
+        }
+        else if(response.ok){
+            return true
         }
         else
             throw "Unknown error."

@@ -123,21 +123,158 @@ function land_id_selected(data) {
     function failure(error) { return { type: landConstants.LAND_OWNER_FAILURE, error } }
 }
 
-function edit_details_submitted(data) {
+function edit_details_submitted(submitted_data) {
+    const cert_data = {};
+
+    console.log("submitted_data: ", submitted_data);
+
     
+    
+    cert_data.state =        submitted_data.landCompState.state;
+    cert_data.district =     submitted_data.landCompState.district;
+    cert_data.cadzone =      submitted_data.landCompState.cadzone;
+    cert_data.plotNumber =   parseInt(submitted_data.landCompState.plotNumber);
+    cert_data.cofo =         submitted_data.rocoCompState.cofo;
+    cert_data.cofoDate =     parseInt(submitted_data.rocoCompState.cofoDate) ;
+    cert_data.rofoHash =     submitted_data.rocoCompState.rofoHash;
+    cert_data.rofoDate =     parseInt(submitted_data.rocoCompState.rofoDate);
+    cert_data.stateOfAdmin = submitted_data.landCompState.state;
+    cert_data.certNumber =   submitted_data.rocoCompState.certNumber;
+
+    console.log("cofo: ", cert_data.cofo, " rofo: ", cert_data.rofoHash);
+    if(!(cert_data.state && cert_data.district && 
+        cert_data.cadzone && cert_data.plotNumber 
+        && cert_data.cofo && cert_data.rofoHash)){
+        return dispatch => {
+            const compare_error = "Required fields are missing in ro/co"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
 
     return dispatch => {
-        console.log("Entered Edit dispatch");
-        console.log(data)
+        landService.edit_details(cert_data)
+            .then(
+                edit_details_result => {
+                    dispatch(alertActions.success("Land details successfully edited"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                    console.log("error message: ", error.message);
+                }
+            )
     }
+    function failure(error) { return { type: landConstants.LAND_CERT_FAILURE, error } }
 
 }
 
-function apply_details_submitted(data) {
+function apply_details_submitted(submitted_data) {
+
+    const owner_data = {}
+    const land_data = {}
+    const cert_data = {}
+
+    owner_data.name =         submitted_data.ownerCompState.name;
+    owner_data.gender =       submitted_data.ownerCompState.gender
+    owner_data.dob =          parseInt(submitted_data.ownerCompState.dob);
+    owner_data.ownerAddress = submitted_data.ownerCompState.ownerAddress;
+    owner_data.phone1 =       submitted_data.ownerCompState.phone1;
+    owner_data.phone2 =       submitted_data.ownerCompState.phone2;
+    owner_data.NIN =          submitted_data.ownerCompState.NIN;
+    owner_data.email =        submitted_data.ownerCompState.email;
+    owner_data.password =     submitted_data.ownerCompState.password;
+    owner_data.stateOfAdmin = submitted_data.landCompState.stateOfAdmin;
+
+    land_data.state =         submitted_data.landCompState.state;
+    land_data.district =      submitted_data.landCompState.district;
+    land_data.cadzone =       submitted_data.landCompState.cadzone;
+    land_data.plotNumber =    parseInt(submitted_data.landCompState.plotNumber);
+    land_data.plotSize =      parseInt(submitted_data.landCompState.plotSize);
+    land_data.email =         submitted_data.ownerCompState.email;
+
+    cert_data.state =        submitted_data.landCompState.state;
+    cert_data.district =     submitted_data.landCompState.district;
+    cert_data.cadzone =      submitted_data.landCompState.cadzone;
+    cert_data.plotNumber =   parseInt(submitted_data.landCompState.plotNumber);
+    cert_data.cofo =         submitted_data.rocoCompState.cofo;
+    cert_data.cofoDate =     parseInt(submitted_data.rocoCompState.cofoDate) ;
+    cert_data.rofoHash =     submitted_data.rocoCompState.rofoHash;
+    cert_data.rofoDate =     parseInt(submitted_data.rocoCompState.rofoDate);
+    cert_data.stateOfAdmin = submitted_data.landCompState.state;
+    cert_data.certNumber =   submitted_data.rocoCompState.certNumber;
+
+    const data = {};
+
+    var all_okay = true;
+    if(!(cert_data.state && cert_data.district && 
+        cert_data.cadzone && cert_data.plotNumber)){
+        return dispatch => {
+            const compare_error = "Required fields are missing in ro/co"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
+    
+    for (const [key, value] of Object.entries(owner_data)) {
+        if(!value){
+            all_okay = false;
+            break;
+        }
+      }
+
+    if(!(submitted_data.landCompState.state && submitted_data.landCompState.district 
+        && submitted_data.landCompState.cadzone && submitted_data.landCompState.plotNumber
+        )){
+        all_okay = false;
+    }
+
+    
+
+    if(!all_okay){
+        return dispatch => {
+            const compare_error = "Required fields are missing in land documents"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
 
     return dispatch => {
-        console.log("Entered apply dispatch");
-        console.log(data)
+        landService.create_owner(owner_data)
+            .then(
+                create_owner_result => {
+                    dispatch(alertActions.success("Owner data successfully created!"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                }
+            )
+        landService.create_land(land_data)
+            .then(
+                create_land_result => {
+                    dispatch(alertActions.success("Land data successfully created!"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                }
+            )
+        landService.edit_details(data)
+            .then(
+                edit_details_result => {
+                    dispatch(alertActions.success("Land details successfully edited"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                }
+            )
+        
     }
+    function failure(error) { return { type: landConstants.LAND_APPLY_DETAILS_FAILURE, error } }
     
 }

@@ -21,13 +21,13 @@ export default function OwnerComponent(props) {
   // const { rocoCompState } = props;
 
   const local_state = {
-    roStat: "",
-    roDate: "",
-    coStat: "",
-    coDate: "",
+    rofoHash: "",
+    rofoDate: "",
+    cofo: "",
+    cofoDate: "",
     coForm: "",
     coNature: "",
-    certno: ""
+    certNumber: ""
     
   }
 
@@ -39,17 +39,19 @@ export default function OwnerComponent(props) {
 
   if(landCertInfo.items && Object.keys(landCertInfo).length > 0){
     console.log("landCertInfo items: ", landCertInfo.items);
-    local_state.roStat = landCertInfo.items.rofoHash;
-    local_state.roDate = landCertInfo.items.rofoDate;
-    local_state.coStat = landCertInfo.items.cofo;
-    local_state.coDate = landCertInfo.items.cofoDate;
+    local_state.rofoHash = landCertInfo.items.rofoHash;
+    local_state.rofoDate = landCertInfo.items.rofoDate;
+    local_state.cofo = landCertInfo.items.cofo;
+    local_state.cofoDate = landCertInfo.items.cofoDate;
     local_state.coForm = landCertInfo.items.coForm ? landCertInfo.items.coForm : "";
     local_state.coNature = landCertInfo.items.coNature ? landCertInfo.items.coNature : "";
-    local_state.certno = landCertInfo.items.certNumber;
+    local_state.certNumber = landCertInfo.items.certNumber;
 
     if(!view){
       Object.assign(rocoCompState, local_state);
     }
+
+    console.log("rocoCompState inside comp: ", rocoCompState, " local_state: ", local_state);
     
   }
 
@@ -115,19 +117,19 @@ export default function OwnerComponent(props) {
                   <table className="table table-borderless">                      
                       <tbody>
                           <tr>
-                          <td>RofO:<input type="text" className="form-control short-text-input-80" name="roStat" value={local_state.roStat} disabled onChange={handleChange} /></td>
-                          <td>RofO Date: <input type="text" className="form-control short-text-input-80" name="roDate" value={local_state.roDate} disabled onChange={handleChange} /></td>
+                          <td>RofO:<input type="text" className="form-control short-text-input-80" name="rofoHash" value={local_state.rofoHash} disabled onChange={handleChange} /></td>
+                          <td>RofO Date: <input type="text" className="form-control short-text-input-80" name="rofoDate" value={local_state.rofoDate} disabled onChange={handleChange} /></td>
                           </tr>
                           <tr>
-                          <td>CofO: <input type="text" className="form-control short-text-input-80" name="coStat" value={local_state.coStat} disabled onChange={handleChange} /></td>
-                          <td>CofO Date: <input type="text" className="form-control short-text-input-80" name="coDate" value={local_state.coDate} disabled onChange={handleChange} /></td>
+                          <td>CofO: <input type="text" className="form-control short-text-input-80" name="cofo" value={local_state.cofo} disabled onChange={handleChange} /></td>
+                          <td>CofO Date: <input type="text" className="form-control short-text-input-80" name="cofoDate" value={local_state.cofoDate} disabled onChange={handleChange} /></td>
                           </tr>
                           <tr>
                           <td>CofO Form: <input type="text" className="form-control short-text-input-80" name="coForm" value={local_state.coForm} disabled onChange={handleChange} /></td>
                           <td>Nature: <input type="text" className="form-control short-text-input-80" name="coNature" value={local_state.coNature} disabled onChange={handleChange} /></td>
                           </tr>
                           <tr>
-                              <td>Cert Number: <input type="text" className="form-control" name="certno" value={local_state.certno} disabled onChange={handleChange} /></td>
+                              <td>Cert Number: <input type="text" className="form-control" name="certNumber" value={local_state.certNumber} disabled onChange={handleChange} /></td>
                           </tr>
 
                       </tbody>
@@ -159,19 +161,19 @@ export default function OwnerComponent(props) {
                       
                       <tbody>
                           <tr>
-                          <td>RofO:<input type="text" className="form-control short-text-input-80" name="roStat" defaultValue={local_state.roStat} onChange={handleChange} /></td>
-                          <td>RofO Date: <input type="text" className="form-control short-text-input-80" name="roDate" defaultValue={local_state.roDate} onChange={handleChange} /></td>
+                          <td>RofO:<input type="text" className="form-control short-text-input-80" name="rofoHash" defaultValue={local_state.rofoHash} onChange={handleChange} /></td>
+                          <td>RofO Date: <input type="text" className="form-control short-text-input-80" name="rofoDate" defaultValue={local_state.rofoDate} onChange={handleChange} /></td>
                           </tr>
                           <tr>
-                          <td>CofO: <input type="text" className="form-control short-text-input-80" name="coStat" defaultValue={local_state.coStat} onChange={handleChange} /></td>
-                          <td>CofO Date: <input type="text" className="form-control short-text-input-80" name="coDate" defaultValue={local_state.coDate} onChange={handleChange} /></td>
+                          <td>CofO: <input type="text" className="form-control short-text-input-80" name="cofo" defaultValue={local_state.cofo} onChange={handleChange} /></td>
+                          <td>CofO Date: <input type="text" className="form-control short-text-input-80" name="cofoDate" defaultValue={local_state.cofoDate} onChange={handleChange} /></td>
                           </tr>
                           <tr>
                           <td>CofO Form: <input type="text" className="form-control short-text-input-80" name="coForm" defaultValue={local_state.coForm} onChange={handleChange} /></td>
                           <td>Nature: <input type="text" className="form-control short-text-input-80" name="coNature" defaultValue={local_state.coNature} onChange={handleChange} /></td>
                           </tr>
                           <tr>
-                              <td>Cert Number: <input type="text" className="form-control" name="certno" defaultValue={local_state.certno} onChange={handleChange} /></td>
+                              <td>Cert Number: <input type="text" className="form-control" name="certNumber" defaultValue={local_state.certNumber} onChange={handleChange} /></td>
                           </tr>
 
                       </tbody>
@@ -213,19 +215,19 @@ export default function OwnerComponent(props) {
                       
                       <tbody>
                           <tr>
-                          <td>RofO:<input type="text" className="form-control short-text-input-80" name="roStat"  onChange={handleChange} /></td>
-                          <td>RofO Date: <input type="date" className="form-control short-text-input-80" name="roDate" onChange={handleChange} /></td>
+                          <td>RofO:<input type="text" className="form-control short-text-input-80" name="rofoHash"  onChange={handleChange} /></td>
+                          <td>RofO Date: <input type="date" className="form-control short-text-input-80" name="rofoDate" onChange={handleChange} /></td>
                           </tr>
                           <tr>
-                          <td>CofO: <input type="text" className="form-control short-text-input-80" name="coStat" onChange={handleChange} /></td>
-                          <td>CofO Date: <input type="date" className="form-control short-text-input-80" name="coDate" onChange={handleChange} /></td>
+                          <td>CofO: <input type="text" className="form-control short-text-input-80" name="cofo" onChange={handleChange} /></td>
+                          <td>CofO Date: <input type="date" className="form-control short-text-input-80" name="cofoDate" onChange={handleChange} /></td>
                           </tr>
                           <tr>
                           <td>CofO Form: <input type="text" className="form-control short-text-input-80" name="coForm" onChange={handleChange} /></td>
                           <td>Nature: <input type="text" className="form-control short-text-input-80" name="coNature" onChange={handleChange} /></td>
                           </tr>
                           <tr>
-                              <td>Cert Number: <input type="text" className="form-control" name="certno" onChange={handleChange} /></td>
+                              <td>Cert Number: <input type="text" className="form-control" name="certNumber" onChange={handleChange} /></td>
                           </tr>
 
                       </tbody>
