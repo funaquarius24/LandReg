@@ -48,5 +48,9 @@ Thumbs.db
 *.mov
 *.wmv
 
+
 **/*BAK*
+
+# zip files
+*.zip
 

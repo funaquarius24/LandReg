@@ -10,3 +10,6 @@ jest -t suAdmin
 jest searchLands
 
 To add superAdmin, jest -t suAdmin
+
+view all commits
+git log --pretty=format:"%h - %an, %ar : %s"

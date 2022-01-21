@@ -54,12 +54,12 @@ function addAdmin(data) {
 
 function handleResponse(response) {
     return response.text().then(text => {
-        const data = {};
+        var data = {};
         try { // statements to try
             data = text && JSON.parse(text);
           }
         catch (e) {
-            data.message = text;
+            data = text;
         }
         
         if (!response.ok) {
