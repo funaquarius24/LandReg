@@ -17,7 +17,7 @@ async function login(email, password) {
     };
 
     const response = await fetch(`${apiUrl}/auth`, requestOptions);
-    console.log(response);
+    // console.log(response);
     const user = await handleResponse(response);
     // store user details and jwt token in local storage to keep user logged in between page refreshes
     localStorage.setItem('user', JSON.stringify(user));
@@ -27,7 +27,7 @@ async function login(email, password) {
 function logout() {
     // remove user from local storage to log user out
     console.log("logout called removeItem");
-    localStorage.removeItem('user');
+    localStorage.clear();
 }
 
 function getAll() {
@@ -41,13 +41,14 @@ function getAll() {
 }
 
 function addAdmin(data) {
+    console.log("AddAdmin called");
     const requestOptions = {
         method: 'POST',
         headers: authHeader(),
         body: JSON.stringify(data)
     };
 
-    console.log("headers: ", requestOptions);
+    // console.log("headers: ", requestOptions);
 
     return fetch(`${apiUrl}/users/addAdmin`, requestOptions).then(handleResponse);
 }

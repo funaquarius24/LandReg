@@ -9,6 +9,8 @@ import { App } from './App';
 // import { configureFakeBackend } from './_helpers';
 // configureFakeBackend();
 
+// localStorage.clear();
+
 render(
     <Provider store={store}>
         <App />

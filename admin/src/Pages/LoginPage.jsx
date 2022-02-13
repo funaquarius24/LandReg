@@ -20,7 +20,12 @@ class LoginPage extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        console.log(localStorage.getItem('user'));
+        // console.log(localStorage.getItem('user'));
+        
+    }
+
+    componentDidMount() {
+      localStorage.clear();
     }
 
     handleChange(e) {

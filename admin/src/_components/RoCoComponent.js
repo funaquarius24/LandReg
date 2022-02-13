@@ -113,7 +113,7 @@ export default function OwnerComponent(props) {
         <div className="container-fluid raised-box raised-box-theme">
             <p>LofI/CofO/RofO Details</p>
           <div className="row">
-              <div className="col-md-6">
+              <div className="col-sm-12 col-md-6">
                   <table className="table table-borderless">                      
                       <tbody>
                           <tr>
