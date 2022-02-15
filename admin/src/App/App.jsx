@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Router, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
-import { alertActions, userActions } from '../_actions';
+import { alertActions } from '../_actions';
 import { PrivateRoute } from '../_components';
-import { HomePage } from '../HomePage';
 import { LoginPage } from '../Pages';
 import { Dashboard } from '../Pages';
 import { DetailsPage } from '../Pages';

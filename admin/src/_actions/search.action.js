@@ -13,7 +13,7 @@ function land_search_id(data) {
         dispatch(request(data));
         // console.log("data: ", data);
 
-        searchService.land_search_id(data)
+        searchService.land_search_id(data) 
             .then(
                 search_result => { 
                     dispatch(success(search_result));

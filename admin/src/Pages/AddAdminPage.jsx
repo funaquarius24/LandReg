@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
@@ -8,46 +7,6 @@ import './AddAdminPage.css'
 class AddAdminPage extends React.Component {
     constructor(props) {
         super(props);
-
-        const nig_states_array = [
-            "Abia",
-            "Adamawa",
-            "Akwa Ibom",
-            "Anambra",
-            "Bauchi",
-            "Bayelsa",
-            "Benue",
-            "Borno",
-            "Cross River",
-            "Delta",
-            "Ebonyi",
-            "Edo",
-            "Ekiti",
-            "Enugu",
-            "FCT - Abuja",
-            "Gombe",
-            "Imo",
-            "Jigawa",
-            "Kaduna",
-            "Kano",
-            "Katsina",
-            "Kebbi",
-            "Kogi",
-            "Kwara",
-            "Lagos",
-            "Nasarawa",
-            "Niger",
-            "Ogun",
-            "Ondo",
-            "Osun",
-            "Oyo",
-            "Plateau",
-            "Rivers",
-            "Sokoto",
-            "Taraba",
-            "Yobe",
-            "Zamfara"
-          ]
 
         this.state = {
             name: '',
@@ -91,8 +50,8 @@ class AddAdminPage extends React.Component {
     
 
     render() {
-        const { loggingIn } = this.props;
-        const { username, password, submitted } = this.state;
+        // const { loggingIn } = this.props;
+        // const { username, password, submitted } = this.state;
         const nig_states_array = [
             "Abia",
             "Adamawa",

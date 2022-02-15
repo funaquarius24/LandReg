@@ -155,13 +155,13 @@ function handleResponse(response) {
         return data;
     })
     .catch(error => {
-        if (response.status == "404"){
-            throw "404 error.";
+        if (response.status === "404"){
+            throw new Error("404 error.");
         }
         else if(response.ok){
             return true
         }
         else
-            throw "Unknown error."
+            throw new Error("Unknown error.");
     });
 }

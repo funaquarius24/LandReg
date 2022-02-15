@@ -2,14 +2,16 @@ import { landConstants } from '../_constants';
 import { landService } from '../_services';
 import { alertActions } from '.';
 import { history } from '../_helpers';
-
-import {useDispatch, useSelector} from "react-redux"; 
+import { store } from "../_helpers";
 
 export const landActions = {
     land_id_selected,
     edit_details_submitted,
-    apply_details_submitted
-};
+    apply_details_submitted,
+    apply_application_submitted,
+    apply_certification_submitted,
+    apply_allocation_submitted,
+}; 
 
 function land_info(data) {
     return dispatch => {
@@ -223,7 +225,7 @@ function apply_details_submitted(submitted_data) {
             all_okay = false;
             break;
         }
-      }
+    }
 
     if(!(submitted_data.landCompState.state && submitted_data.landCompState.district 
         && submitted_data.landCompState.cadzone && submitted_data.landCompState.plotNumber
@@ -278,3 +280,171 @@ function apply_details_submitted(submitted_data) {
     function failure(error) { return { type: landConstants.LAND_APPLY_DETAILS_FAILURE, error } }
     
 }
+
+function apply_application_submitted(submitted_data) {
+    const owner_data = {}
+    var all_okay = true;
+
+    owner_data.name =         submitted_data.name;
+    owner_data.gender =       submitted_data.gender
+    owner_data.dob =          new Date(submitted_data.dob).getTime();
+    owner_data.ownerAddress = submitted_data.address;
+    owner_data.phone1 =       submitted_data.phone1;
+    owner_data.phone2 =       submitted_data.phone2;
+    owner_data.NIN =          submitted_data.nin;
+    owner_data.email =        submitted_data.email;
+    owner_data.password =     submitted_data.password;
+    owner_data.stateOfAdmin = submitted_data.stateOfAdmin;
+
+    for (const [key, value] of Object.entries(owner_data)) {
+        if(!value){
+            all_okay = false;
+            console.log("Failed: ", key);
+            break;
+        }
+    }
+
+    if(!all_okay){
+        return dispatch => {
+            const compare_error = "Required fields are missing "
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
+
+    return dispatch => {
+        landService.create_owner(owner_data)
+            .then(
+                create_owner_result => {
+                    dispatch(alertActions.success("Owner data successfully created!"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                }
+            )
+    }
+    function failure(error) { return { type: landConstants.LAND_APPLY_DETAILS_FAILURE, error } }
+
+}
+
+function apply_allocation_submitted(submitted_data) {
+
+    const land_data = {}
+
+    land_data.state =         submitted_data.state;
+    land_data.district =      submitted_data.district;
+    land_data.cadzone =       submitted_data.cadzone;
+    land_data.plotNumber =    parseInt(submitted_data.plotNumber);
+    land_data.plotSize =      parseInt(submitted_data.plotSize);
+    land_data.email =         submitted_data.email;
+
+    const data = {};
+
+    var all_okay = true;
+    
+    if(!(submitted_data.state && submitted_data.district 
+        && submitted_data.cadzone && submitted_data.plotNumber
+        )){
+        all_okay = false;
+    }
+
+    
+
+    if(!all_okay){
+        return dispatch => {
+            const compare_error = "Required fields are missing"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
+
+    return dispatch => {
+        landService.create_land(land_data)
+            .then(
+                create_land_result => {
+                    dispatch(alertActions.success("Land data successfully created!"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                }
+            )
+    }
+    function failure(error) { return { type: landConstants.LAND_APPLY_DETAILS_FAILURE, error } }
+    
+}
+
+function apply_certification_submitted(submitted_data) {
+    console.log(submitted_data);
+
+    const cert_data = {}
+    const state = store.getState();
+
+    const adminKey = state.authentication.user.wAddress;
+
+
+    cert_data.state =        submitted_data.state;
+    cert_data.district =     submitted_data.district;
+    cert_data.cadzone =      submitted_data.cadzone;
+    cert_data.plotNumber =   parseInt(submitted_data.plotNumber);
+    cert_data.cofo =         submitted_data.cofo || "";
+    cert_data.cofoDate =     new Date(submitted_data.cofoDate).getTime();
+    cert_data.rofoHash =     submitted_data.rofoHash || "";
+    cert_data.rofoDate =     new Date(submitted_data.rofoDate).getTime();
+    cert_data.stateOfAdmin = submitted_data.state || "";
+    cert_data.certNumber =   submitted_data.certNumber || "";
+
+    
+
+    // if(submitted_data.cofoDate !== 0) {
+        // cert_data.cofoDate = new Date(submitted_data.cofoDate).getTime();
+        // console.log("###################################");
+        // console.log(cert_data.cofoDate);
+        // var te = new Date(cert_data.cofoDate);
+        // console.log(te.getFullYear() + "-" + parseInt(te.getMonth() + 1)  + "-" + te.getDate()); // 1 has to be added since month starts from 0
+    // }
+
+
+    const data = {};
+
+    var all_okay = true;
+    if(!(cert_data.plotNumber)){
+        return dispatch => {
+            const compare_error = "Required fields are missing in ro/co"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
+
+    
+
+    if(!all_okay){
+        return dispatch => {
+            const compare_error = "Required fields are missing!"
+            // console.log(compare_error);
+            dispatch(failure(compare_error));
+            dispatch(alertActions.error(compare_error));
+        }
+    }
+
+    return dispatch => {
+        landService.edit_details(cert_data)
+            .then(
+                edit_details_result => {
+                    dispatch(alertActions.success("Land details successfully edited!"));
+                },
+                error => {
+                    dispatch(failure(error.name + error.message));
+                    dispatch(alertActions.error(error.message));
+                }
+            )
+        
+    }
+    function failure(error) { return { type: landConstants.LAND_APPLY_DETAILS_FAILURE, error } }
+    
+}
+

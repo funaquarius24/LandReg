@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LandComponent(props) {
   const classes = useStyles();
-  const { view, create, landCompState } = props;  
+  const { view, create_view, landCompState } = props;  
 
   const local_state = {
     state: "",
@@ -32,10 +32,10 @@ export default function LandComponent(props) {
   const dispatch = useDispatch();
   const landInfo = useSelector(state => state.landData); 
 
-  console.log("landInfo component: ", landInfo );
+  // console.log("landInfo component: ", landInfo );
 
   if(landInfo.items && Object.keys(landInfo).length > 0){
-    console.log("landInfo items: ", landInfo.items);
+    // console.log("landInfo items: ", landInfo.items);
     local_state.state = landInfo.items.land_info.state;
     local_state.district = landInfo.items.land_info.district;
     local_state.cadzone = landInfo.items.land_info.cadzone;
@@ -104,7 +104,7 @@ export default function LandComponent(props) {
           <p>Plot Number: <input type="text" className="form-control short-text-input-60" name="plotNumber" defaultValue={local_state.plotNumber} onChange={handleChange} /></p>
           <p>Plot Size: <input type="text" className="form-control short-text-input-80" name="plotSize" defaultValue={local_state.plotSize} onChange={handleChange} /></p>
           <p>Owner: <input type="text" className="form-control short-text-input-60" name="owner" defaultValue={local_state.owner} onChange={handleChange} /></p>
-          <p>Status: <input type="text" className="form-control short-text-input-60" name="status" defaultValue={local_state.status} onChange={handleChange} /></p>
+          <p>Status: <input type="text" className="form-control short-text-input-60" name="status" value={local_state.status} onChange={handleChange} /></p>
           {/* <p>Last Modified: <input type="text" className="form-control short-text-input-60" name="lastModified" defaultValue={local_state.lastModified} onChange={handleChange} /></p> */}
               
           </div>
@@ -117,13 +117,13 @@ export default function LandComponent(props) {
     return (
       <div className={classes.root}>
         <div className="container-fluid raised-box raised-box-theme">
-          <p>State: <input type="text" className="form-control short-text-input-60" name="state" placeholder={local_state.state} onChange={handleChange} /></p>
-          <p>District: <input type="text" className="form-control short-text-input-60" name="district" placeholder={local_state.district} onChange={handleChange} /></p>
-          <p>Cadzone: <input type="text" className="form-control short-text-input-60" name="cadzone" placeholder={local_state.cadzone} onChange={handleChange} /></p>
-          <p>Plot Number: <input type="text" className="form-control short-text-input-60" name="plotNumber" placeholder={local_state.plotNumber} onChange={handleChange} /></p>
-          <p>Plot Size: <input type="text" className="form-control short-text-input-80" name="plotSize" placeholder={local_state.plotSize} onChange={handleChange} /></p>
-          <p>Owner: <input type="text" className="form-control short-text-input-60" name="owner" placeholder={local_state.owner} onChange={handleChange} /></p>
-          <p>Status: <input type="text" className="form-control short-text-input-60" name="status" placeholder={local_state.status} onChange={handleChange} /></p>
+          <p>State: <input type="text" className="form-control short-text-input-60" name="state" onChange={handleChange} /></p>
+          <p>District: <input type="text" className="form-control short-text-input-60" name="district"  onChange={handleChange} /></p>
+          <p>Cadzone: <input type="text" className="form-control short-text-input-60" name="cadzone"  onChange={handleChange} /></p>
+          <p>Plot Number: <input type="text" className="form-control short-text-input-60" name="plotNumber" onChange={handleChange} /></p>
+          <p>Plot Size: <input type="text" className="form-control short-text-input-80" name="plotSize" onChange={handleChange} /></p>
+          <p>Owner: <input type="text" className="form-control short-text-input-60" name="owner" placeholder={"owner wallet address"} onChange={handleChange} /></p>
+          <p>Email:  <input type="text" className="form-control short-text-input-60" name="email"  onChange={handleChange} /></p>
           {/* <p>Last Modified: <input type="text" className="form-control short-text-input-60" name="lastModified" placeholder={local_state.lastModified} onChange={handleChange} /></p> */}
               
           </div>
@@ -132,7 +132,7 @@ export default function LandComponent(props) {
   }
 
   return (
-    create ? createLayout() : view ? viewLayout() : editLayout()
+    create_view ? createLayout() : view ? viewLayout() : editLayout()
   );
 }
 

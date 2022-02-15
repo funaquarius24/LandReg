@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OwnerComponent(props) {
   const classes = useStyles();
-  const { view, create, ownerCompState } = props;  
+  const { view, create_view, ownerCompState } = props;  
 
   const local_state = {
     name: "",
@@ -28,7 +28,8 @@ export default function OwnerComponent(props) {
     phone2: "",
     email: "",
     walletAddress: "",
-    password: ""
+    password: "",
+    stateOfAdmin: "",
     
   }
 
@@ -145,6 +146,8 @@ export default function OwnerComponent(props) {
           <p>Phone2:  <input type="text" className="form-control short-text-input-60" name="phone2" placeholder="" onChange={handleChange} /></p>
           <p>Email:  <input type="text" className="form-control short-text-input-60" name="email" placeholder="" onChange={handleChange} /></p>
           <p>Password: <input type="text" className="form-control short-text-input-80" name="password" placeholder="" onChange={handleChange} /></p>
+          <p>Admin</p>
+          <p>State of admin: <input type="text" className="form-control short-text-input-60" name="stateOfAdmin" onChange={handleChange} /></p>
               
           </div>
       </div>
@@ -154,7 +157,7 @@ export default function OwnerComponent(props) {
 
 
   return (
-    create? createLayout() : view ? viewLayout() : editLayout()
+    create_view ? createLayout() : view ? viewLayout() : editLayout()
   );
 }
 

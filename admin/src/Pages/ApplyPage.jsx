@@ -1,12 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { userActions } from '../_actions';
-import './ApplyPage.css'
-import OwnerComponent from '../_components/OwnerComponent';
-import LandComponent from '../_components/LandComponent';
-import RoCoComponent from '../_components/RoCoComponent';
+import './ApplyPage.css';
 import TabbedComponent from '../_components/TabbedComponent';
 
 import { landActions } from '../_actions/land.actions';
@@ -21,12 +16,6 @@ class ApplyPage extends React.Component {
         const ownerCompState = {};
         const landCompState = {};
         const rocoCompState = {};
-
-        const handleSubmitClicked = () => {
-          const formState = {ownerCompState: ownerCompState, landCompState: landCompState, rocoCompState: rocoCompState}
-          this.props.dispatch(landActions.apply_details_submitted(formState));
-        }
-
 
         return (
           <div className="container-scroller">

@@ -34,12 +34,12 @@ function login(username, password) {
 
 function logout() {
     userService.logout();
-    console.log("logging out");
+    // console.log("logging out");
     return { type: userConstants.LOGOUT };
 }
 
 function addAdmin(data) {
-    console.log("addAdmin: ", data)
+    // console.log("addAdmin: ", data)
     if(!(data.name && data.email && data.phone && data.password && data.state && data.district)){
         return dispatch => {
             const compare_error = "Required fields are missing"
@@ -56,8 +56,8 @@ function addAdmin(data) {
             )
     }
 
-    function request(data) { return { type: userConstants.ADD_ADMIN_REQUEST, data } }
-    function success(data) { return { type: userConstants.ADD_ADMIN_SUCCESS, data } }
+    // function request(data) { return { type: userConstants.ADD_ADMIN_REQUEST, data } }
+    // function success(data) { return { type: userConstants.ADD_ADMIN_SUCCESS, data } }
     function failure(error) { return { type: userConstants.ADD_ADMIN_FAILURE, error } }
 }
 

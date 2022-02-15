@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
@@ -7,7 +6,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { Button } from '@material-ui/core';
 
@@ -17,6 +15,7 @@ import RoCoComponent from '../_components/RoCoComponent';
 
 import { landActions } from '../_actions/land.actions';
 
+import {useDispatch, useSelector} from "react-redux"; 
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,6 +62,8 @@ export default function FullWidthTabs() {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 
+  const dispatch = useDispatch();
+
   const ownerCompState = {};
     const landCompState = {};
     const rocoCompState = {};
@@ -78,7 +79,13 @@ export default function FullWidthTabs() {
 
   const handleSubmitClicked = () => {
     const formState = {ownerCompState: ownerCompState, landCompState: landCompState, rocoCompState: rocoCompState}
-    this.props.dispatch(landActions.apply_details_submitted(formState));
+    console.log("Tabbed foemstate: ", formState);
+    if(value == 0)  {
+        dispatch(landActions.apply_application_submitted(ownerCompState));
+    }
+    else if(value == 1) dispatch(landActions.apply_allocation_submitted(landCompState));
+    else if(value == 2) dispatch(landActions.apply_certification_submitted(rocoCompState));
+    // this.props.dispatch(landActions.apply_details_submitted(formState));
   }
 
   return (
@@ -92,7 +99,7 @@ export default function FullWidthTabs() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Application" {...a11yProps(0)} />
+          <Tab label="Application" {...a11yProps(0)} />l=
           <Tab label="Allocation" {...a11yProps(1)} />
           <Tab label="Certification" {...a11yProps(2)} />
         </Tabs>
@@ -103,13 +110,13 @@ export default function FullWidthTabs() {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
-          <OwnerComponent create={true}  ownerCompState={ownerCompState} />
+          <OwnerComponent create_view={true}  ownerCompState={ownerCompState} />
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          <LandComponent create={true}  landCompState={landCompState} />
+          <LandComponent create_view={true}  landCompState={landCompState} />
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
-          <RoCoComponent create={true}  rocoCompState={rocoCompState} />
+          <RoCoComponent create_view={true}  rocoCompState={rocoCompState} />
         </TabPanel>
       </SwipeableViews>
       <div className="d-flex justify-content-center">
