@@ -15,6 +15,7 @@ exports.insertAdmin = (req, res, next) => {
         
     })
     .then(() => {
+        console.log(data);
         return blockchainModel.addAdmin(data)
     })
     .then((result) => {

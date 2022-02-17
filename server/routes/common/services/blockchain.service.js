@@ -21,6 +21,14 @@ err = null;
     var accounts = await web3.eth.getAccounts()
     .then((accounts) => {
         console.log("Connected!");
+        myContract.getPastEvents('allEvents', {
+            
+            fromBlock: 0,
+            toBlock: 'latest'
+        }, function(error, events){ console.log(events); })
+        .then(function(events){
+            console.log(events) 
+        });
     })
     .catch(function failureCallback(error) {
         err = "" + error;
@@ -29,7 +37,7 @@ err = null;
             console.log(err)
         }
         else {
-            console.log("Unknown error on blockchain node");
+            console.log("Unknown error on blockchain node", error);
         }
       } );
 

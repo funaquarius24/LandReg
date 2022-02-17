@@ -41,7 +41,12 @@ exports.insertAdmin = (req, res, next) => {
     UserModel.findByEmail(req.body.email)
         .then((result) => {
             if(result.length == 0)
+            {
+                if (req.body.lastName.length !== 0){
+                    req.body.name = req.body.name + " " + req.body.lastName;
+                }
                 return result;
+            }
             else{
                 res.error = "User already exists.";
                 res.status(409).send("User already exists.");
